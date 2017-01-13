@@ -7,3 +7,10 @@ Results are visualized on the map as a network graph.
 * Thymeleaf 
 * AngularJS 
 * Leaflet
+
+### Usage examples
+##### Search results for university `Вінницький національний технічний університет`:
+![Searching results](doc/resources/ex1.png?raw=true)
+
+##### Zoomed results:
+![Zoomed results](doc/resources/ex1-zoomed.png?raw=true)
