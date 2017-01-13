@@ -2,13 +2,13 @@
 Bachelor's thesis on the study of the interaction of scientific cooperation. 
 Results are visualized on the map as a network graph.
 
-### Technologies: 
+### Technologies:
 * Spring-Boot 
 * Thymeleaf 
 * AngularJS 
 * Leaflet
 
-### Usage examples
+## Usage examples
 ##### Search results for university `Вінницький національний технічний університет`:
 ![Searching results](doc/resources/ex1.png?raw=true)
 
