@@ -70,7 +70,7 @@ public class ScholarAuthorDao implements AuthorDao {
 
 	@Override
 	@Cacheable("co-authors")
-	public Collection<Author> findCoauthorsByAuthorId(final String authorId) {
+	public Collection<Author> findCoauthorsById(final String authorId) {
 		logger.info("Finding co-authors by authorId '{}'", authorId);
 		Collection<Author> authors = new ArrayList<>();
 		try {
@@ -85,7 +85,7 @@ public class ScholarAuthorDao implements AuthorDao {
 
 	@Override
 	@Cacheable("author")
-	public Author findAuthorDetailsByAuthorId(final String authorId) {
+	public Author findAuthorById(final String authorId) {
 		logger.info("Finding author details by id '{}'", authorId);
 		Author author = null;
 		try {
@@ -97,6 +97,12 @@ public class ScholarAuthorDao implements AuthorDao {
 		}
 
 		return author;
+	}
+
+	@Override
+	public Author findAuthorByName(String authorName) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

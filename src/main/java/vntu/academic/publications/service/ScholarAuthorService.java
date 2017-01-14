@@ -38,7 +38,7 @@ public class ScholarAuthorService implements AuthorService {
 
 		detailedAuthors.parallelStream().map((Author author) -> new AuthorDTO(author))
 				.forEach((AuthorDTO authorDTO) -> {
-					Collection<Author> coauthors = authorDAO.findCoauthorsByAuthorId(authorDTO.getId());
+					Collection<Author> coauthors = authorDAO.findCoauthorsById(authorDTO.getId());
 					coauthors = findAuthorsDetails(coauthors);
 					authorDTO.setCoauthors(coauthors);
 					authorDTOs.add(authorDTO);
@@ -51,7 +51,7 @@ public class ScholarAuthorService implements AuthorService {
 		return authors.parallelStream()
 				.filter((Author author) -> author != null)
 				.parallel()
-				.map((Author author) -> authorDAO.findAuthorDetailsByAuthorId(author.getId()))
+				.map((Author author) -> authorDAO.findAuthorById(author.getId()))
 				.filter((Author author) -> author != null)
 				.collect(Collectors.toSet());
 	}

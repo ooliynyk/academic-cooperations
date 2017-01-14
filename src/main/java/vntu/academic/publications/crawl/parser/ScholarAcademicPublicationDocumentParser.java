@@ -53,7 +53,7 @@ public class ScholarAcademicPublicationDocumentParser implements AcademicPublica
 		for (Element user : userElements) {
 			final Element userCitationElement = user.select("h3.gsc_1usr_name a").first();
 
-			// for check wheter author specify his organization
+			// for check whether author specify his organization
 			final Element userStaffElement = user.select("div.gsc_1usr_aff").first();
 
 			if (userCitationElement == null || userStaffElement == null)

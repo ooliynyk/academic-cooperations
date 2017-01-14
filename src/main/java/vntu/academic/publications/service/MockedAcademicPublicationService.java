@@ -2,14 +2,11 @@ package vntu.academic.publications.service;
 
 import java.util.Arrays;
 
-import org.springframework.stereotype.Service;
-
 import vntu.academic.publications.dto.AuthorDTO;
 import vntu.academic.publications.dto.OrganizationDTO;
 import vntu.academic.publications.dto.PublicationNetworkDTO;
 import vntu.academic.publications.model.Author;
 
-@Service
 public class MockedAcademicPublicationService implements AcademicPublicationService {
 
 	@Override

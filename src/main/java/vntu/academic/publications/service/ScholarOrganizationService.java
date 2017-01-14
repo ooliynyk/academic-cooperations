@@ -66,7 +66,7 @@ public class ScholarOrganizationService implements OrganizationService {
 	
 	private Collection<Author> findAuthorsDetails(final Collection<Author> authors) {
 		return authors.parallelStream()
-				.map((Author author) -> authorDAO.findAuthorDetailsByAuthorId(author.getId()))
+				.map((Author author) -> authorDAO.findAuthorById(author.getId()))
 				.filter((Author author) -> author != null)
 				.collect(Collectors.toList());
 	}

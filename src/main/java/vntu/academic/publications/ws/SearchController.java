@@ -43,7 +43,7 @@ public class SearchController {
 	public PublicationNetworkDTO searchTest(@RequestParam String university)
 			throws InterruptedException, ExecutionException {
 		logger.info("Searching mock", university);
-
+		
 		return new MockedAcademicPublicationService().fetchPublicationNetworkByOrganizationName(university);
 	}
 
