@@ -1,4 +1,4 @@
-package vntu.academic.publications.entities;
+package vntu.academic.publications.model;
 
 public class Author {
 	private final String id;

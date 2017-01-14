@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.collect.ImmutableList;
 
-import vntu.academic.publications.helpers.NetworkHelper;
+import vntu.academic.publications.helper.NetworkHelper;
 
 @Service
 public class ProxiedDocumentCrawler implements DocumentCrawler {

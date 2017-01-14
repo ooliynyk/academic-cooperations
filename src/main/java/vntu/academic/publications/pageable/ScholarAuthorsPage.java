@@ -3,7 +3,7 @@ package vntu.academic.publications.pageable;
 import java.util.Collection;
 
 import vntu.academic.publications.dao.AuthorDao;
-import vntu.academic.publications.entities.Author;
+import vntu.academic.publications.model.Author;
 
 public class ScholarAuthorsPage implements AuthorsPage {
 

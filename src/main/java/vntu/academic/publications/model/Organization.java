@@ -1,4 +1,4 @@
-package vntu.academic.publications.entities;
+package vntu.academic.publications.model;
 
 public class Organization {
 	private final String id;

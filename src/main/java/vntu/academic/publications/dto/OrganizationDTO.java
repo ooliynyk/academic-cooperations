@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import vntu.academic.publications.entities.Organization;
+import vntu.academic.publications.model.Organization;
 
 public class OrganizationDTO {
 	private String id;

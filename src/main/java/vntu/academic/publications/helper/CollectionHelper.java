@@ -1,4 +1,4 @@
-package vntu.academic.publications.helpers;
+package vntu.academic.publications.helper;
 
 import java.util.HashMap;
 import java.util.List;

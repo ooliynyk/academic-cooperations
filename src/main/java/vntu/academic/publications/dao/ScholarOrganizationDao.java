@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import vntu.academic.publications.crawl.DocumentCrawler;
 import vntu.academic.publications.crawl.parser.AcademicPublicationDocumentParser;
-import vntu.academic.publications.entities.Organization;
+import vntu.academic.publications.model.Organization;
 
 @Repository
 public class ScholarOrganizationDao implements OrganizationDao {

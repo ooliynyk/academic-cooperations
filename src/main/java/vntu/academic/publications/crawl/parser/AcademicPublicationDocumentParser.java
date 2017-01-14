@@ -4,11 +4,11 @@ import java.util.Collection;
 
 import org.jsoup.nodes.Document;
 
-import vntu.academic.publications.entities.Author;
-import vntu.academic.publications.entities.Organization;
+import vntu.academic.publications.model.Author;
+import vntu.academic.publications.model.Organization;
 
 public interface AcademicPublicationDocumentParser {
-	
+
 	Author parseAuthorWithOrganizationId(Document doc, String authorId) throws DocumentParsingException;
 
 	Collection<Author> parseAuthors(Document doc) throws DocumentParsingException;

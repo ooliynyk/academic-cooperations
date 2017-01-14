@@ -11,8 +11,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
-import vntu.academic.publications.entities.Author;
-import vntu.academic.publications.entities.Organization;
+import vntu.academic.publications.model.Author;
+import vntu.academic.publications.model.Organization;
 
 @Service
 public class ScholarAcademicPublicationDocumentParser implements AcademicPublicationDocumentParser {

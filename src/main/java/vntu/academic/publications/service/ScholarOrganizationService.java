@@ -1,4 +1,4 @@
-package vntu.academic.publications.services;
+package vntu.academic.publications.service;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import vntu.academic.publications.dao.AuthorDao;
 import vntu.academic.publications.dao.OrganizationDao;
 import vntu.academic.publications.dto.OrganizationDTO;
-import vntu.academic.publications.entities.Author;
-import vntu.academic.publications.entities.Organization;
-import vntu.academic.publications.helpers.CollectionHelper;
+import vntu.academic.publications.helper.CollectionHelper;
+import vntu.academic.publications.model.Author;
+import vntu.academic.publications.model.Organization;
 
 @Service
 public class ScholarOrganizationService implements OrganizationService {

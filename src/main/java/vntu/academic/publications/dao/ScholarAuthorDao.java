@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import vntu.academic.publications.crawl.AcademicPublicationDocumentProvider;
 import vntu.academic.publications.crawl.parser.AcademicPublicationDocumentParser;
-import vntu.academic.publications.entities.Author;
+import vntu.academic.publications.model.Author;
 import vntu.academic.publications.pageable.AuthorsPage;
 import vntu.academic.publications.pageable.ScholarAuthorsPage;
 

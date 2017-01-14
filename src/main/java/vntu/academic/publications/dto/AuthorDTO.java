@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import vntu.academic.publications.entities.Author;
+import vntu.academic.publications.model.Author;
 
 public class AuthorDTO {
 	private String id;
