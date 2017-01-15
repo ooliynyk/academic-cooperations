@@ -13,5 +13,7 @@ public interface AcademicPublicationDocumentProvider {
 
 	Document getAuthorsDocumentByOrganizationName(String organizationId, String pageId)
 			throws DocumentCrawlingException;
+	
+	Document getSearchResultsDocumentOnFirstPage(String query) throws DocumentCrawlingException;
 
 }

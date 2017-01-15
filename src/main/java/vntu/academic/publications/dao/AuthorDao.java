@@ -13,7 +13,7 @@ public interface AuthorDao {
 
 	Collection<Author> findAuthorsOnFirstPageByOrganizationName(String organizationName);
 
-	Collection<Author> findCoauthorsById(String authorId);
+	Collection<Author> findCoauthorsByAuthorId(String authorId);
 
 	AuthorsPage findAuthorsPageByOrganizationId(String organizationId, String pageId);
 

@@ -11,6 +11,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
+import vntu.academic.publications.crawl.DocumentCrawlingException;
+import vntu.academic.publications.crawl.ScholarDocumentProvider;
 import vntu.academic.publications.model.Author;
 import vntu.academic.publications.model.Organization;
 
@@ -58,20 +60,14 @@ public class ScholarAcademicPublicationDocumentParser implements AcademicPublica
 
 			if (userCitationElement == null || userStaffElement == null)
 				continue;
-			
+
 			String userCitationAttribute = userCitationElement.attr("href");
-			Matcher userIdMatcher = USER_ID_PATTERN.matcher(userCitationAttribute);
-			if (userIdMatcher.find()) {
-				String authorId = userIdMatcher.group(1);
-				String authorName = userCitationElement.text();
 
-				Author author = new Author(authorId, authorName, null);
+			String authorId = parseUserIdFromUserCitationAttribute(userCitationAttribute);
+			String authorName = userCitationElement.text();
+			Author author = new Author(authorId, authorName, null);
 
-				authors.add(author);
-			} else {
-				throw new DocumentParsingException("User id pattern not found in: " + userCitationAttribute);
-			}
-
+			authors.add(author);
 		}
 
 		return authors;
@@ -121,7 +117,7 @@ public class ScholarAcademicPublicationDocumentParser implements AcademicPublica
 			String id = matcher.group(1);
 			String name = organizationLink.text();
 			String site = null;
-			
+
 			if (organizationSpan != null) {
 				site = organizationSpan.text().trim().replaceFirst("-", "").trim();
 			}
@@ -148,6 +144,68 @@ public class ScholarAcademicPublicationDocumentParser implements AcademicPublica
 		}
 
 		return name;
+	}
+
+	@Override
+	public Author parseAuthorFromSearchResults(Document doc) throws DocumentParsingException {
+		Author author = null;
+		System.out.println(doc);
+
+		final Elements searchResultElements = doc.select("div.gs_r");
+
+		if (!searchResultElements.isEmpty()) {
+			final Elements authorLinkElements = searchResultElements.first().select("div.gs_a").select("a");
+
+			for (Element authorLinkElement : authorLinkElements) {
+				final Elements childrenElements = authorLinkElement.children();
+				final Element targetAuthorElement = childrenElements.select("b").first();
+
+				System.out.println(authorLinkElement);
+				if (targetAuthorElement != null) {
+					System.out.println(targetAuthorElement);
+
+					String authorHrefAttribute = authorLinkElement.attr("href");
+					String authorId = parseUserIdFromUserCitationAttribute(authorHrefAttribute);
+					String authorName = authorLinkElement.text();
+
+					author = new Author(authorId, authorName, null);
+					break;
+				}
+			}
+		}
+
+		return author;
+	}
+
+	@Override
+	public Organization parseOrganizationFromSearchResults(Document doc) throws DocumentParsingException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static void main(String[] args) throws DocumentParsingException, DocumentCrawlingException {
+		AcademicPublicationDocumentParser parser = new ScholarAcademicPublicationDocumentParser();
+		Author author = parser.parseAuthorFromSearchResults(
+				new ScholarDocumentProvider().getSearchResultsDocumentOnFirstPage("AP Rotshtein"));
+		System.out.println(author);
+	}
+
+	private static String parseUserIdFromUserCitationAttribute(String userCitationAttribute)
+			throws DocumentParsingException {
+		String userId = null;
+
+		Matcher userIdMatcher = USER_ID_PATTERN.matcher(userCitationAttribute);
+		if (userIdMatcher.find()) {
+			userId = userIdMatcher.group(1);
+		} else {
+			throw new DocumentParsingException("User id pattern not found in: " + userCitationAttribute);
+		}
+
+		return userId;
+	}
+
+	private static String parseOrganizationIdFrom(String userCitationAttribute) throws DocumentParsingException {
+		return null;
 	}
 
 }

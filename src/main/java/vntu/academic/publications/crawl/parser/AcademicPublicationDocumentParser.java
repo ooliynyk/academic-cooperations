@@ -10,6 +10,10 @@ import vntu.academic.publications.model.Organization;
 public interface AcademicPublicationDocumentParser {
 
 	Author parseAuthorWithOrganizationId(Document doc, String authorId) throws DocumentParsingException;
+	
+	Author parseAuthorFromSearchResults(Document doc) throws DocumentParsingException;
+	
+	Organization parseOrganizationFromSearchResults(Document doc) throws DocumentParsingException;
 
 	Collection<Author> parseAuthors(Document doc) throws DocumentParsingException;
 

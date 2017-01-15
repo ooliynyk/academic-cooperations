@@ -70,7 +70,7 @@ public class ScholarAuthorDao implements AuthorDao {
 
 	@Override
 	@Cacheable("co-authors")
-	public Collection<Author> findCoauthorsById(final String authorId) {
+	public Collection<Author> findCoauthorsByAuthorId(final String authorId) {
 		logger.info("Finding co-authors by authorId '{}'", authorId);
 		Collection<Author> authors = new ArrayList<>();
 		try {
@@ -80,6 +80,7 @@ public class ScholarAuthorDao implements AuthorDao {
 		} catch (Exception e) {
 			logger.warn("Finding co-author details by authorId '{}' error: {}", authorId, e.getMessage());
 		}
+		
 		return authors;
 	}
 
@@ -101,8 +102,16 @@ public class ScholarAuthorDao implements AuthorDao {
 
 	@Override
 	public Author findAuthorByName(String authorName) {
-		// TODO Auto-generated method stub
-		return null;
+		logger.info("Finding author by name '{}'", authorName);
+		Author author = null;
+		try {
+			Document doc = docProvider.getSearchResultsDocumentOnFirstPage(authorName);
+			author = docParser.parseAuthorFromSearchResults(doc);
+		} catch (Exception e) {
+			logger.warn("Finding author by name '{}' error: {}", authorName, e.getMessage());
+		}
+		
+		return author;
 	}
 
 }

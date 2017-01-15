@@ -38,7 +38,7 @@ public class ScholarAuthorService implements AuthorService {
 
 		detailedAuthors.parallelStream().map((Author author) -> new AuthorDTO(author))
 				.forEach((AuthorDTO authorDTO) -> {
-					Collection<Author> coauthors = authorDAO.findCoauthorsById(authorDTO.getId());
+					Collection<Author> coauthors = authorDAO.findCoauthorsByAuthorId(authorDTO.getId());
 					coauthors = findAuthorsDetails(coauthors);
 					authorDTO.setCoauthors(coauthors);
 					authorDTOs.add(authorDTO);
