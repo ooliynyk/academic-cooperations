@@ -61,4 +61,9 @@ public class Author {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Author [id=" + id + ", name=" + name + ", organizationId=" + organizationId + "]";
+	}
+
 }
