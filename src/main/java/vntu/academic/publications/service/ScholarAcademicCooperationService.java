@@ -78,6 +78,11 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 
 				Collection<String> publicationAuthorsNames = publication.getAuthorNames();
 				Collection<AuthorDTO> publicationAuthors = authorService.fetchAuthorsByNames(publicationAuthorsNames);
+				
+				// if not all authors found by names, need to check again.
+				if (publicationAuthors.size() < 2) 
+					continue;
+				
 				publicationDTO.setAuthors(publicationAuthors);
 
 				allPublications.add(publicationDTO);

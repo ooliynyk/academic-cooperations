@@ -82,8 +82,11 @@ public class ScholarAuthorService implements AuthorService {
 	public Collection<AuthorDTO> fetchAuthorsByNames(Collection<String> authorsNames) {
 		Collection<AuthorDTO> authors = new ArrayList<>(authorsNames.size());
 		for (String authorName : authorsNames) {
-			AuthorDTO author = new AuthorDTO(authorDao.findAuthorByName(authorName));
-			authors.add(author);
+			Author author = authorDao.findAuthorByName(authorName);
+			if (author != null) {
+				AuthorDTO authorDTO = new AuthorDTO(author);
+				authors.add(authorDTO);
+			}
 		}
 
 		return authors;

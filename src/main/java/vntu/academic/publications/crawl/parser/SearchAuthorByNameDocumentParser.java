@@ -16,27 +16,24 @@ public final class SearchAuthorByNameDocumentParser extends DocumentParser {
 	}
 
 	public String parseAuthorId() throws DocumentParsingException {
-		String authorId = null;
-
 		final Elements searchResultElements = doc.select("div.gs_r");
 
-		if (!searchResultElements.isEmpty()) {
-			final Element authorsElement = searchResultElements.select("div.gs_a").first();
+		for (Element searchResultElement : searchResultElements) {
+			final Element authorsElement = searchResultElement.select("div.gs_a").first();
 			final Elements authorLinkElements = authorsElement.select("a");
 
 			for (Element authorLinkElement : authorLinkElements) {
 				final Elements childrenElements = authorLinkElement.children();
 				final Element targetAuthorElement = childrenElements.select("b").first();
 
-				if (targetAuthorElement != null) {
-					String authorHrefAttribute = authorLinkElement.attr("href");
-					authorId = fetchUserIdFromUserCitationAttribute(authorHrefAttribute);
-					break;
+				String authorHrefAttribute = authorLinkElement.attr("href");
+				if (targetAuthorElement != null && !authorHrefAttribute.isEmpty()) {
+					return fetchUserIdFromUserCitationAttribute(authorHrefAttribute);
 				}
 			}
 		}
 
-		return authorId;
+		return null;
 	}
 
 	private static String fetchUserIdFromUserCitationAttribute(String userCitationAttribute)
