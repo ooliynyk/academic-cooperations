@@ -11,7 +11,7 @@ public class AuthorDTO {
 	private String name;
 	private String organizationId;
 
-	private Set<Author> coauthors = new LinkedHashSet<>();
+	private Set<Author> coAuthors = new LinkedHashSet<>();
 	
 	public AuthorDTO(Author author) {
 		this.id = author.getId();
@@ -43,12 +43,12 @@ public class AuthorDTO {
 		this.organizationId = organizationId;
 	}
 
-	public Collection<Author> getCoauthors() {
-		return coauthors;
+	public Collection<Author> getCoAuthors() {
+		return coAuthors;
 	}
 
-	public void setCoauthors(Collection<Author> coauthors) {
-		this.coauthors = new LinkedHashSet<>(coauthors);
+	public void setCoAuthors(Collection<Author> coAuthors) {
+		this.coAuthors = new LinkedHashSet<>(coAuthors);
 	}
 
 }

@@ -2,6 +2,7 @@ package vntu.academic.publications.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class ScholarAuthorDao implements AuthorDao {
 	@Override
 	@Cacheable("authors-page")
 	public AuthorsPage findAuthorsPageByOrganizationId(final String organizationId, final String currentPageId) {
-		logger.info("Finding authors by organizationId '{}', pageId '{}'", organizationId, currentPageId);
+		logger.info("Finding authors by organization id '{}', page id '{}'", organizationId, currentPageId);
 
 		Collection<Author> authors = new ArrayList<>();
 		String nextPageId = null;
@@ -38,11 +39,16 @@ public class ScholarAuthorDao implements AuthorDao {
 			AuthorsOnPageByOrganizationDocumentParser parser = docProvider
 					.getAuthorsOnPageByOrganizationIdDocumentParser(organizationId, currentPageId);
 
-			authors = parser.parseAuthors();
+			Collection<String> authorsIdentifiers = parser.parseAuthorsIdentifiers();
+			for (String id : authorsIdentifiers) {
+				Author author = findAuthorById(id);
+
+				authors.add(author);
+			}
 
 			nextPageId = parser.parseNextPageId();
 		} catch (Exception e) {
-			logger.warn("Finding authors by organizationId '{}', pageId '{}' error: {}", organizationId, currentPageId,
+			logger.warn("Finding authors by organization id '{}', page id '{}' error: {}", organizationId, currentPageId,
 					e.getMessage());
 		}
 
@@ -55,13 +61,19 @@ public class ScholarAuthorDao implements AuthorDao {
 	@Override
 	public Collection<Author> findAuthorsOnFirstPageByOrganizationName(final String organizationName) {
 		logger.info("Finding authors by organization name '{}', on first page", organizationName);
+		
 		Collection<Author> authors = new ArrayList<>();
 
 		try {
 			AuthorsOnPageByOrganizationDocumentParser parser = docProvider
 					.getAuthorsOnPageByOrganizationNameDocumentParser(organizationName, null);
 
-			authors = parser.parseAuthors();
+			Collection<String> authorsIdentifiers = parser.parseAuthorsIdentifiers();
+			for (String id : authorsIdentifiers) {
+				Author author = findAuthorById(id);
+
+				authors.add(author);
+			}
 		} catch (Exception e) {
 			logger.warn("Finding authors by organization name '{}', on first page error: {}", organizationName,
 					e.getMessage());
@@ -71,25 +83,27 @@ public class ScholarAuthorDao implements AuthorDao {
 	}
 
 	@Override
-	@Cacheable("co-authors")
-	public Collection<Author> findCoauthorsByAuthorId(final String authorId) {
-		logger.info("Finding co-authors by authorId '{}'", authorId);
-		Collection<Author> authors = new ArrayList<>();
+	@Cacheable("coauthors-by-authorid")
+	public Collection<String> findCoAuthorsIdentifiersByAuthorId(final String authorId) {
+		logger.info("Finding co-authors identifiers by authorId '{}'", authorId);
+		
+		Collection<String> authorsIdentifiers = Collections.emptyList();
 		try {
 			CoAuthorsByAuthorIdDocumentParser parser = docProvider.getCoAuthorsByAuthorIdDocumentParser(authorId);
 
-			authors = parser.parseAuthors();
+			authorsIdentifiers = parser.parseAuthorsIdentifiers();
 		} catch (Exception e) {
-			logger.warn("Finding co-author details by authorId '{}' error: {}", authorId, e.getMessage());
+			logger.warn("Finding co-author identifiers by authorId '{}' error: {}", authorId, e.getMessage());
 		}
 
-		return authors;
+		return authorsIdentifiers;
 	}
 
 	@Override
-	@Cacheable("author")
+	@Cacheable("author-by-id")
 	public Author findAuthorById(final String authorId) {
-		logger.info("Finding author details by id '{}'", authorId);
+		logger.info("Finding author by id '{}'", authorId);
+		
 		Author author = null;
 		try {
 			AuthorPersonalPageDocumentParser parser = docProvider
@@ -100,7 +114,7 @@ public class ScholarAuthorDao implements AuthorDao {
 
 			author = new Author(authorId, authorName, organizationId);
 		} catch (Exception e) {
-			logger.warn("Finding author details by id '{}' error: {}", authorId, e.getMessage());
+			logger.warn("Finding author by id '{}' error: {}", authorId, e.getMessage());
 		}
 
 		return author;
@@ -109,16 +123,15 @@ public class ScholarAuthorDao implements AuthorDao {
 	@Override
 	public Author findAuthorByName(String authorName) {
 		logger.info("Finding author by name '{}'", authorName);
+		
 		Author author = null;
 		try {
 			// TODO : URLEncoder.encode
-			SearchAuthorByNameDocumentParser parser = docProvider
-					.getSearchAuthorByNameDocumentParser(authorName);
+			SearchAuthorByNameDocumentParser parser = docProvider.getSearchAuthorByNameDocumentParser(authorName);
 
 			String authorId = parser.parseAuthorId();
 
-			// maybe is better to use parsed authorName
-			author = new Author(authorId, authorName, null);
+			author = findAuthorById(authorId);
 		} catch (Exception e) {
 			logger.warn("Finding author by name '{}' error: {}", authorName, e.getMessage());
 		}

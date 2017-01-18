@@ -22,7 +22,7 @@ public class ScholarAuthorService implements AuthorService {
 
 	@Autowired
 	private AuthorDao authorDAO;
-	
+
 	@Override
 	public Collection<AuthorDTO> fetchAllAuthorsWithCoAuthorsByOrganization(OrganizationDTO organizationDTO) {
 		Collection<AuthorDTO> authorDTOs = new ArrayList<>();
@@ -33,26 +33,27 @@ public class ScholarAuthorService implements AuthorService {
 			logger.info("Fetching on page {}", i);
 			authors.addAll(page.authors());
 		}
-		
-		Collection<Author> detailedAuthors = findAuthorsDetails(authors);
 
-		detailedAuthors.parallelStream().map((Author author) -> new AuthorDTO(author))
-				.forEach((AuthorDTO authorDTO) -> {
-					Collection<Author> coauthors = authorDAO.findCoauthorsByAuthorId(authorDTO.getId());
-					coauthors = findAuthorsDetails(coauthors);
-					authorDTO.setCoauthors(coauthors);
-					authorDTOs.add(authorDTO);
-				});
-		
+		authors.parallelStream().map((Author author) -> new AuthorDTO(author)).forEach((AuthorDTO authorDTO) -> {
+			Collection<String> coAuthorsIdentifiers = authorDAO.findCoAuthorsIdentifiersByAuthorId(authorDTO.getId());
+
+			Collection<Author> coAuthors = coAuthorsIdentifiers.parallelStream()
+					.filter(coAuthorId -> hasCommunication(authorDTO.getId(), coAuthorId))
+					.map(coAuthorId -> authorDAO.findAuthorById(coAuthorId))
+					.filter(coAuthor -> coAuthor != null)
+					.collect(Collectors.toList());
+
+			authorDTO.setCoAuthors(coAuthors);
+			authorDTOs.add(authorDTO);
+		});
+
 		return authorDTOs;
 	}
-	
-	private Collection<Author> findAuthorsDetails(Collection<Author> authors) {
-		return authors.parallelStream()
-				.filter((Author author) -> author != null)
-				.parallel()
-				.map((Author author) -> authorDAO.findAuthorById(author.getId()))
-				.filter((Author author) -> author != null)
-				.collect(Collectors.toSet());
+
+	private boolean hasCommunication(String authorId, String coAuthorId) {
+		Collection<String> coAuthorsIdentifiers = authorDAO.findCoAuthorsIdentifiersByAuthorId(coAuthorId);
+
+		return coAuthorsIdentifiers.contains(authorId);
 	}
+
 }

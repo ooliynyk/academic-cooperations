@@ -26,7 +26,7 @@ public class MockedAcademicPublicationService implements AcademicPublicationServ
 		AuthorDTO ad3 = new AuthorDTO(a3);
 		AuthorDTO ad4 = new AuthorDTO(a4);
 
-		ad1.setCoauthors(Arrays.asList(a2, a3, a4));
+		ad1.setCoAuthors(Arrays.asList(a2, a3, a4));
 
 		OrganizationDTO o1 = new OrganizationDTO();
 		o1.setId("o1");

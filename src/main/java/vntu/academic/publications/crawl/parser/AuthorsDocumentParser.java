@@ -9,8 +9,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import vntu.academic.publications.model.Author;
-
 public abstract class AuthorsDocumentParser extends DocumentParser {
 
 	protected static final Pattern USER_ID_PATTERN = Pattern.compile("\\/citations\\?user=([^&]+)");
@@ -19,10 +17,10 @@ public abstract class AuthorsDocumentParser extends DocumentParser {
 		super(doc);
 	}
 
-	public Collection<Author> parseAuthors() throws DocumentParsingException {
+	public Collection<String> parseAuthorsIdentifiers() throws DocumentParsingException {
 		final Elements userElements = doc.select("div.gsc_1usr");
 
-		Collection<Author> authors = new ArrayList<>();
+		Collection<String> authorsIdentifiers = new ArrayList<>();
 		for (Element user : userElements) {
 			final Element userCitationElement = user.select("h3.gsc_1usr_name a").first();
 
@@ -35,13 +33,11 @@ public abstract class AuthorsDocumentParser extends DocumentParser {
 			String userCitationAttribute = userCitationElement.attr("href");
 
 			String authorId = fetchUserIdFromUserCitationAttribute(userCitationAttribute);
-			String authorName = userCitationElement.text();
-			Author author = new Author(authorId, authorName, null);
 
-			authors.add(author);
+			authorsIdentifiers.add(authorId);
 		}
 
-		return authors;
+		return authorsIdentifiers;
 	}
 
 	private static String fetchUserIdFromUserCitationAttribute(String userCitationAttribute)

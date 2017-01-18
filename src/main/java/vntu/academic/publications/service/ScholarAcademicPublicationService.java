@@ -32,14 +32,14 @@ public class ScholarAcademicPublicationService implements AcademicPublicationSer
 		
 		publicationNetwork.setRootOrganization(organization);
 		
-		final Collection<Author> flatCoauthors = new ArrayList<>();
+		final Collection<Author> flatCoAuthors = new ArrayList<>();
 		for (AuthorDTO author : authors) {
-			flatCoauthors.addAll(author.getCoauthors());
+			flatCoAuthors.addAll(author.getCoAuthors());
 		}
 		
-		Set<OrganizationDTO> coorgs = mapAuthorsToOrganizationSet(flatCoauthors);
+		Set<OrganizationDTO> coorgs = mapAuthorsToOrganizationSet(flatCoAuthors);
 		for (OrganizationDTO coorg : coorgs) {
-			coorg.setAuthors(filterAuthorsFromOrganization(coorg.getId(), flatCoauthors));
+			coorg.setAuthors(filterAuthorsFromOrganization(coorg.getId(), flatCoAuthors));
 			publicationNetwork.addOrganization(coorg);
 		}
 		
