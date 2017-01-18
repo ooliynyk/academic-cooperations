@@ -5,26 +5,25 @@ var PROJECT_URL = '/academic-publications'
 app.controller('PublicationsGraphController',
 		function PublicationsGraphController($scope, $http) {
 			$scope.search = function(university) {
-				$http
-						.get(
-								PROJECT_URL + '/publication-network/search?university='
-										+ university).then(function(response) {
-							network = $scope.network(response.data);
-							networkLayer(network);
-						});
+				$http.get(
+						PROJECT_URL + '/cooperation-network/by-coauthors?university='
+								+ university).then(function(response) {
+					network = $scope.network(response.data);
+					networkLayer(network);
+				});
 			};
 
-			$scope.network = function(publicationNetwork) {
+			$scope.network = function(cooperationNetwork) {
 				var nodes = [];
 				var edges = [];
 				var network = null;
 
-				var rootId = publicationNetwork.rootOrganizationId;
+				var rootId = cooperationNetwork.rootOrganizationId;
 				console.log(rootId);
-				
-				var orgs = publicationNetwork.organizations;
-				
-				for (var id in orgs) {
+
+				var orgs = cooperationNetwork.organizations;
+
+				for ( var id in orgs) {
 					nodes.push({
 						id : id,
 						value : 10,
@@ -34,11 +33,11 @@ app.controller('PublicationsGraphController',
 						edges.push({
 							from : rootId,
 							to : orgs[id].id,
-							value : orgs[id].authors.length
+							value : orgs[id].cooperationValue
 						});
 					}
 				}
-		
+
 				var data = {
 					nodes : nodes,
 					edges : edges
@@ -47,13 +46,3 @@ app.controller('PublicationsGraphController',
 			};
 
 		});
-
-app.filter('coauthors', function() {
-	return function(value) {
-		if (!angular.isArray(value))
-			return '';
-		return value.map(function(author) {
-			return author.name + " | " + author.organization;
-		});
-	};
-});

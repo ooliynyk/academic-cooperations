@@ -16,8 +16,6 @@ import vntu.academic.publications.crawl.parser.AuthorsOnPageByOrganizationDocume
 import vntu.academic.publications.crawl.parser.CoAuthorsByAuthorIdDocumentParser;
 import vntu.academic.publications.crawl.parser.SearchAuthorByNameDocumentParser;
 import vntu.academic.publications.model.Author;
-import vntu.academic.publications.pageable.AuthorsPage;
-import vntu.academic.publications.pageable.ScholarAuthorsPage;
 
 @Repository
 public class ScholarAuthorDao implements AuthorDao {
@@ -26,42 +24,42 @@ public class ScholarAuthorDao implements AuthorDao {
 
 	@Autowired
 	private DocumentParserProvider docProvider;
-
+	
 	@Override
-	@Cacheable("authors-page")
-	public AuthorsPage findAuthorsPageByOrganizationId(final String organizationId, final String currentPageId) {
-		logger.info("Finding authors by organization id '{}', page id '{}'", organizationId, currentPageId);
+	@Cacheable("authors")
+	public Collection<Author> findAllAuthorsByOrganizationId(String organizationId) {
+		logger.info("Finding authors by organization id '{}'", organizationId);
 
 		Collection<Author> authors = new ArrayList<>();
-		String nextPageId = null;
 
 		try {
-			AuthorsOnPageByOrganizationDocumentParser parser = docProvider
-					.getAuthorsOnPageByOrganizationIdDocumentParser(organizationId, currentPageId);
+			String currentPageId = null;
+			String nextPageId = null;
+			do {
+				currentPageId = nextPageId;
+				
+				AuthorsOnPageByOrganizationDocumentParser parser = docProvider
+						.getAuthorsOnPageByOrganizationIdDocumentParser(organizationId, currentPageId);
 
-			Collection<String> authorsIdentifiers = parser.parseAuthorsIdentifiers();
-			for (String id : authorsIdentifiers) {
-				Author author = findAuthorById(id);
-
-				authors.add(author);
-			}
-
-			nextPageId = parser.parseNextPageId();
+				Collection<String> authorsIdentifiers = parser.parseAuthorsIdentifiers();
+				for (String id : authorsIdentifiers) {
+					Author author = findAuthorById(id);
+					authors.add(author);
+				}
+				
+				nextPageId = parser.parseNextPageId();
+			} while (nextPageId != null && !nextPageId.equals(currentPageId));
 		} catch (Exception e) {
-			logger.warn("Finding authors by organization id '{}', page id '{}' error: {}", organizationId, currentPageId,
-					e.getMessage());
+			logger.warn("Finding authors by organization id '{}' error: {}", organizationId, e.getMessage());
 		}
 
-		if (currentPageId != null && currentPageId.equals(nextPageId))
-			nextPageId = null;
-
-		return new ScholarAuthorsPage(this, organizationId, authors, nextPageId);
+		return authors;
 	}
 
 	@Override
 	public Collection<Author> findAuthorsOnFirstPageByOrganizationName(final String organizationName) {
 		logger.info("Finding authors by organization name '{}', on first page", organizationName);
-		
+
 		Collection<Author> authors = new ArrayList<>();
 
 		try {
@@ -86,7 +84,7 @@ public class ScholarAuthorDao implements AuthorDao {
 	@Cacheable("coauthors-by-authorid")
 	public Collection<String> findCoAuthorsIdentifiersByAuthorId(final String authorId) {
 		logger.info("Finding co-authors identifiers by authorId '{}'", authorId);
-		
+
 		Collection<String> authorsIdentifiers = Collections.emptyList();
 		try {
 			CoAuthorsByAuthorIdDocumentParser parser = docProvider.getCoAuthorsByAuthorIdDocumentParser(authorId);
@@ -103,7 +101,7 @@ public class ScholarAuthorDao implements AuthorDao {
 	@Cacheable("author-by-id")
 	public Author findAuthorById(final String authorId) {
 		logger.info("Finding author by id '{}'", authorId);
-		
+
 		Author author = null;
 		try {
 			AuthorPersonalPageDocumentParser parser = docProvider
@@ -121,9 +119,10 @@ public class ScholarAuthorDao implements AuthorDao {
 	}
 
 	@Override
+	@Cacheable("author-by-name")
 	public Author findAuthorByName(String authorName) {
 		logger.info("Finding author by name '{}'", authorName);
-		
+
 		Author author = null;
 		try {
 			// TODO : URLEncoder.encode

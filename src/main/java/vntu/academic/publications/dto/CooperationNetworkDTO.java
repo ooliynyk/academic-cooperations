@@ -3,8 +3,7 @@ package vntu.academic.publications.dto;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
-public class PublicationNetworkDTO {
+public class CooperationNetworkDTO {
 	private Map<String, OrganizationDTO> organizations = new LinkedHashMap<>();
 	private String rootOrganizationId;
 
@@ -16,12 +15,16 @@ public class PublicationNetworkDTO {
 	public void addOrganization(OrganizationDTO organization) {
 		final String orgId = organization.getId();
 
-		if (organizations.containsKey(orgId)) {
-			OrganizationDTO org = organizations.get(orgId);
-			organization.getAuthors().forEach((a) -> org.addAuthor(a));
-		} else {
+		if (!organizations.containsKey(orgId)) {
 			organizations.put(orgId, organization);
+		} else {
+			OrganizationDTO storedOrganization = organizations.get(orgId);
+
+			int totalCooperationValue = storedOrganization.getCooperationValue() + organization.getCooperationValue();
+
+			storedOrganization.setCooperationValue(totalCooperationValue);
 		}
+
 	}
 
 	public Map<String, OrganizationDTO> getOrganizations() {

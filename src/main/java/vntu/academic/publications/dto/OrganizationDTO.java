@@ -1,9 +1,5 @@
 package vntu.academic.publications.dto;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import vntu.academic.publications.model.Organization;
 
 public class OrganizationDTO {
@@ -11,8 +7,8 @@ public class OrganizationDTO {
 	private String name;
 	private String site;
 
-	private Set<AuthorDTO> authors = new LinkedHashSet<>();
-	
+	private Integer cooperationValue;
+
 	public OrganizationDTO(Organization organization) {
 		this.id = organization.getId();
 		this.name = organization.getName();
@@ -46,16 +42,12 @@ public class OrganizationDTO {
 		this.site = site;
 	}
 
-	public Collection<AuthorDTO> getAuthors() {
-		return authors;
+	public Integer getCooperationValue() {
+		return cooperationValue;
 	}
 
-	public void setAuthors(Collection<AuthorDTO> authors) {
-		this.authors = new LinkedHashSet<AuthorDTO>(authors);
-	}
-
-	public void addAuthor(AuthorDTO author) {
-		authors.add(author);
+	public void setCooperationValue(Integer cooperationValue) {
+		this.cooperationValue = cooperationValue;
 	}
 
 }

@@ -31,7 +31,6 @@ public final class SearchAuthorByNameDocumentParser extends DocumentParser {
 				if (targetAuthorElement != null) {
 					String authorHrefAttribute = authorLinkElement.attr("href");
 					authorId = fetchUserIdFromUserCitationAttribute(authorHrefAttribute);
-
 					break;
 				}
 			}
@@ -47,8 +46,10 @@ public final class SearchAuthorByNameDocumentParser extends DocumentParser {
 		Matcher userIdMatcher = USER_ID_PATTERN.matcher(userCitationAttribute);
 		if (userIdMatcher.find()) {
 			userId = userIdMatcher.group(1);
-		} else {
-			throw new DocumentParsingException("User id pattern not found in: " + userCitationAttribute);
+		}
+
+		if (userId == null) {
+			throw new DocumentParsingException("User id not found in: " + userCitationAttribute);
 		}
 
 		return userId;

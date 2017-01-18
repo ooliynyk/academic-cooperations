@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import vntu.academic.publications.model.Author;
+import vntu.academic.publications.model.Publication;
 
 public class AuthorDTO {
 	private String id;
@@ -12,7 +13,8 @@ public class AuthorDTO {
 	private String organizationId;
 
 	private Set<Author> coAuthors = new LinkedHashSet<>();
-	
+	private Set<Publication> publications = new LinkedHashSet<>();
+
 	public AuthorDTO(Author author) {
 		this.id = author.getId();
 		this.name = author.getName();
@@ -49,6 +51,14 @@ public class AuthorDTO {
 
 	public void setCoAuthors(Collection<Author> coAuthors) {
 		this.coAuthors = new LinkedHashSet<>(coAuthors);
+	}
+
+	public Set<Publication> getPublications() {
+		return publications;
+	}
+
+	public void setPublications(Collection<Publication> publications) {
+		this.publications = new LinkedHashSet<>(publications);
 	}
 
 }

@@ -1,5 +1,6 @@
 package vntu.academic.publications.ws;
 
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
@@ -11,27 +12,45 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import vntu.academic.publications.dto.PublicationNetworkDTO;
-import vntu.academic.publications.service.AcademicPublicationService;
+import vntu.academic.publications.dto.CooperationNetworkDTO;
+import vntu.academic.publications.service.AcademicCooperationService;
 import vntu.academic.publications.service.MockedAcademicPublicationService;
 
 @RestController
-@RequestMapping("/publication-network")
+@RequestMapping("/cooperation-network")
 public class SearchController {
 	private static Logger logger = LoggerFactory.getLogger(SearchController.class);
 
 	@Autowired
-	private AcademicPublicationService publicationService;
+	private AcademicCooperationService cooperationService;
 
-	@GetMapping("/search")
-	public PublicationNetworkDTO search(@RequestParam String university)
+	@GetMapping("/by-coauthors")
+	public CooperationNetworkDTO searchByCoAtuhors(@RequestParam String university)
 			throws InterruptedException, ExecutionException {
-		logger.info("Searching organization with authors by name '{}'", university);
+		logger.info("Searching cooperation by co-authors for organization '{}'", university);
+
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
-		PublicationNetworkDTO publicationNetwork = publicationService
-				.fetchPublicationNetworkByOrganizationName(university);
+		CooperationNetworkDTO publicationNetwork = cooperationService.fetchCoAuthorsCooperationNetwork(university);
+
+		stopWatch.stop();
+		logger.info("Searching was finished, elapsed time: {}s", stopWatch.getTotalTimeSeconds());
+
+		return publicationNetwork;
+	}
+
+	@GetMapping("/by-publications")
+	public CooperationNetworkDTO searchByPublications(@RequestParam String university,
+			@RequestParam(required = false) Date fromYear, @RequestParam(required = false) Date toYear)
+			throws InterruptedException, ExecutionException {
+		logger.info("Searching cooperation by publications for organization '{}'", university);
+
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+
+		CooperationNetworkDTO publicationNetwork = cooperationService
+				.fetchPublicationsCooperationNetworkInYears(university, fromYear, toYear);
 
 		stopWatch.stop();
 		logger.info("Searching was finished, elapsed time: {}s", stopWatch.getTotalTimeSeconds());
@@ -40,11 +59,11 @@ public class SearchController {
 	}
 
 	@GetMapping("/search-mock")
-	public PublicationNetworkDTO searchTest(@RequestParam String university)
+	public CooperationNetworkDTO searchTest(@RequestParam String university)
 			throws InterruptedException, ExecutionException {
 		logger.info("Searching mock", university);
-		
-		return new MockedAcademicPublicationService().fetchPublicationNetworkByOrganizationName(university);
+
+		return new MockedAcademicPublicationService().fetchCoAuthorsCooperationNetwork(university);
 	}
 
 }

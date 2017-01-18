@@ -16,10 +16,12 @@ public interface DocumentParserProvider {
 	AuthorPersonalPageDocumentParser getAuthorPersonalPageByAuthorIdDocumentParser(String authorId)
 			throws DocumentCrawlingException;
 
-	SearchAuthorByNameDocumentParser getSearchAuthorByNameDocumentParser(String query)
+	SearchAuthorByNameDocumentParser getSearchAuthorByNameDocumentParser(String query) throws DocumentCrawlingException;
+
+	SearchOrganizationByNameDocumentParser getSearchOrganizationByNameDocumentParser(String organizationName)
 			throws DocumentCrawlingException;
 
-	SearchOrganizationByNameDocumentParser getSearchOrganizationByNameDocumentParser(
-			String organizationName) throws DocumentCrawlingException;
+	PublicationsOnAuthorPageDocumentParser getPublicationsOnAuthorPageDocumentParser(String authorId, Integer startFrom,
+			Integer pageSize) throws DocumentCrawlingException;
 
 }

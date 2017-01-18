@@ -1,17 +1,18 @@
 package vntu.academic.publications.service;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import vntu.academic.publications.dto.AuthorDTO;
 import vntu.academic.publications.dto.OrganizationDTO;
-import vntu.academic.publications.dto.PublicationNetworkDTO;
+import vntu.academic.publications.dto.CooperationNetworkDTO;
 import vntu.academic.publications.model.Author;
 
-public class MockedAcademicPublicationService implements AcademicPublicationService {
+public class MockedAcademicPublicationService implements AcademicCooperationService {
 
 	@Override
-	public PublicationNetworkDTO fetchPublicationNetworkByOrganizationName(String organizationName) {
-		PublicationNetworkDTO publicationNetwork = new PublicationNetworkDTO();
+	public CooperationNetworkDTO fetchCoAuthorsCooperationNetwork(String organizationName) {
+		CooperationNetworkDTO publicationNetwork = new CooperationNetworkDTO();
 
 		Author a2 = new Author("a2", "A2", "o2");
 
@@ -31,23 +32,30 @@ public class MockedAcademicPublicationService implements AcademicPublicationServ
 		OrganizationDTO o1 = new OrganizationDTO();
 		o1.setId("o1");
 		o1.setName("Вінницький Національний технічний університет");
-		o1.setAuthors(Arrays.asList(ad1));
+		o1.setCooperationValue((Arrays.asList(ad1).size()));
 
 		OrganizationDTO o2 = new OrganizationDTO();
 		o2.setName("Kiev");
 		o2.setId("o2");
-		o2.setAuthors(Arrays.asList(ad2, ad3));
+		o2.setCooperationValue(Arrays.asList(ad2, ad3).size());
 
 		OrganizationDTO o3 = new OrganizationDTO();
 		o3.setName("University of the aegean");
 		o3.setId("o3");
-		o3.setAuthors(Arrays.asList(ad4));
+		o3.setCooperationValue(Arrays.asList(ad4).size());
 
 		publicationNetwork.setRootOrganization(o1);
 		publicationNetwork.addOrganization(o2);
 		publicationNetwork.addOrganization(o3);
 
 		return publicationNetwork;
+	}
+
+	@Override
+	public CooperationNetworkDTO fetchPublicationsCooperationNetworkInYears(String organizationName, Date fromYear,
+			Date toYear) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

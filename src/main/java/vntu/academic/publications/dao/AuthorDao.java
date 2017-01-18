@@ -3,7 +3,6 @@ package vntu.academic.publications.dao;
 import java.util.Collection;
 
 import vntu.academic.publications.model.Author;
-import vntu.academic.publications.pageable.AuthorsPage;
 
 public interface AuthorDao {
 
@@ -15,6 +14,6 @@ public interface AuthorDao {
 
 	Collection<String> findCoAuthorsIdentifiersByAuthorId(String authorId);
 
-	AuthorsPage findAuthorsPageByOrganizationId(String organizationId, String pageId);
+	Collection<Author> findAllAuthorsByOrganizationId(String organizationId);
 
 }
