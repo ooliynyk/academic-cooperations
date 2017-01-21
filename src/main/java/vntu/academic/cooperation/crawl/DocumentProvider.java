@@ -13,4 +13,6 @@ public interface DocumentProvider {
 	
 	Document getSearchOrganizationDocument(String organizationName) throws DocumentParsingException;
 	
+	Document getPublicationDocument(String publicationId) throws DocumentParsingException;
+	
 }

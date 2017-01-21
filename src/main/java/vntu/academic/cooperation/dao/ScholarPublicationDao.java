@@ -3,6 +3,7 @@ package vntu.academic.cooperation.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
@@ -11,11 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
+import vntu.academic.cooperation.crawl.DocumentParsingException;
 import vntu.academic.cooperation.crawl.DocumentProvider;
 import vntu.academic.cooperation.crawl.ProxiedDocumentParser;
 import vntu.academic.cooperation.crawl.ScholarDocumentProvider;
 import vntu.academic.cooperation.crawl.crawler.DocumentCrawler;
+import vntu.academic.cooperation.crawl.crawler.DocumentCrawlingException;
 import vntu.academic.cooperation.crawl.crawler.PersonalPageDocumentCrawler;
+import vntu.academic.cooperation.crawl.crawler.PublicationAuthorsCrawler;
 import vntu.academic.cooperation.crawl.doc.PersonalPageDocument;
 import vntu.academic.cooperation.crawl.doc.PersonalPageDocument.PublicationDetails;
 import vntu.academic.cooperation.model.Publication;
@@ -55,7 +59,8 @@ public class ScholarPublicationDao implements PublicationDao {
 				for (PublicationDetails publicationDetails : publicationsDetails) {
 					String id = publicationDetails.getId();
 					String title = publicationDetails.getTitle();
-					Collection<String> authorsNames = publicationDetails.getAuthorNames();
+					Collection<String> authorsNames = findAuthorsNames(publicationDetails);
+					
 					Date publicationDate = publicationDetails.getPublicationDate();
 					publications.add(new Publication(id, title, authorsNames, publicationDate));
 				}
@@ -71,6 +76,21 @@ public class ScholarPublicationDao implements PublicationDao {
 		}
 
 		return publications;
+	}
+	
+	private Collection<String> findAuthorsNames(PublicationDetails publicationDetails) throws DocumentParsingException, DocumentCrawlingException {
+		List<String> authorsNames = new ArrayList<>(publicationDetails.getAuthorNames());
+		if (authorsNames.isEmpty())
+			throw new IllegalArgumentException("Publication authors not specified");
+		
+		int lastAuthor = authorsNames.size() - 1;
+		if (authorsNames.get(lastAuthor).equals("...")) {
+			Document doc = docProvider.getPublicationDocument(publicationDetails.getId());
+			DocumentCrawler<Collection<String>> crawler = new PublicationAuthorsCrawler(doc);
+			authorsNames = new ArrayList<>(crawler.crawl());
+		}
+		
+		return authorsNames;
 	}
 
 	public static void main(String[] args) {

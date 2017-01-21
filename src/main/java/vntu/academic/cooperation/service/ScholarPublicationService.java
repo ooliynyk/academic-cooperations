@@ -14,8 +14,12 @@ import vntu.academic.cooperation.model.Publication;
 @Service
 public class ScholarPublicationService implements PublicationService {
 
+	private final PublicationDao publicationDao;
+
 	@Autowired
-	private PublicationDao publicationDao;
+	public ScholarPublicationService(PublicationDao publicationDao) {
+		this.publicationDao = publicationDao;
+	}
 
 	@Override
 	public Collection<Publication> fetchAllPublicationsByAuthor(AuthorDTO author) {
@@ -23,17 +27,16 @@ public class ScholarPublicationService implements PublicationService {
 	}
 
 	@Override
-	public Collection<Publication> fetchAllPublicationsByAuthorBetweenYears(AuthorDTO author, Date fromYear, Date toYear) {
+	public Collection<Publication> fetchAllPublicationsByAuthorBetweenYears(AuthorDTO author, Date fromYear,
+			Date toYear) {
 		Collection<Publication> publications = publicationDao.findAllPublicationsByAuthorId(author.getId());
-		
+
 		if (fromYear != null || toYear != null) {
-			publications = publications.stream()
-				.filter(p -> p.getPublicationDate() != null)
-				.filter(p -> afterOrInYear(p.getPublicationDate(), fromYear))
-				.filter(p -> beforeOrInYear(p.getPublicationDate(), toYear))
-				.collect(Collectors.toList());
+			publications = publications.stream().filter(p -> p.getPublicationDate() != null)
+					.filter(p -> afterOrInYear(p.getPublicationDate(), fromYear))
+					.filter(p -> beforeOrInYear(p.getPublicationDate(), toYear)).collect(Collectors.toList());
 		}
-		
+
 		return publications;
 
 	}

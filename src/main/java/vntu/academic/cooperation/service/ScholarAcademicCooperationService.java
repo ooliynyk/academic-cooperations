@@ -13,6 +13,7 @@ import vntu.academic.cooperation.dto.AuthorDTO;
 import vntu.academic.cooperation.dto.CooperationNetworkDTO;
 import vntu.academic.cooperation.dto.OrganizationDTO;
 import vntu.academic.cooperation.dto.PublicationDTO;
+import vntu.academic.cooperation.model.Publication;
 
 @Service
 public class ScholarAcademicCooperationService implements AcademicCooperationService {
@@ -60,7 +61,7 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 			Date toYear) {
 		CooperationNetworkDTO cooperationNetwork = new CooperationNetworkDTO();
 
-		/*OrganizationDTO organization = organizationService.fetchOrganizationByName(organizationName);
+		OrganizationDTO organization = organizationService.fetchOrganizationByName(organizationName);
 		Collection<AuthorDTO> authors = authorService
 				.fetchAllAuthorsWithPublicationsByOrganizationBetweenYears(organization, fromYear, toYear);
 		
@@ -71,24 +72,25 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 			Collection<Publication> publications = author.getPublications();
 
 			for (Publication publication : publications) {
-				if (publication.getAuthorNames().size() < 2)
+				Collection<String> publicationAuthorsNames = publication.getAuthorsNames();
+				if (publicationAuthorsNames.size() < 2)
 					continue;
-
+				
+				System.out.println("Publication: " + publication);
+				
 				PublicationDTO publicationDTO = new PublicationDTO();
 				publicationDTO.setTitle(publication.getTitle());
-				publicationDTO.setPublicationId(publication.getPublicationId());
+				publicationDTO.setPublicationId(publication.getId());
 				publicationDTO.setPublicationDate(publication.getPublicationDate());
 
-				Collection<String> publicationAuthorsNames = publication.getAuthorNames();
-				Collection<AuthorDTO> publicationAuthors = authorService.fetchAuthorsByIdentifiers(publicationAuthorsNames);
-				
-				// if not all authors found by names, need to check again.
-				if (publicationAuthors.size() < 2) 
-					continue;
-				
+				Collection<AuthorDTO> publicationAuthors = findPublicationAuthors(publication, authors);
+				System.out.println("Publication authors: " + publicationAuthors);
+
 				publicationDTO.setAuthors(publicationAuthors);
 
-				allPublications.add(publicationDTO);
+				if (publicationDTO.getAuthors().size() > 1) {
+					allPublications.add(publicationDTO);
+				}
 			}
 		}
 
@@ -100,9 +102,24 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 			coorg.setCooperationValue(publicationsFromOrg.size());
 
 			cooperationNetwork.addOrganization(coorg);
-		}*/
+		}
 
 		return cooperationNetwork;
+	}
+	
+	private static Collection<AuthorDTO> findPublicationAuthors(Publication publication, Collection<AuthorDTO> allAuthors) {
+		Collection<AuthorDTO> publicationAuthors = new ArrayList<>();
+		
+		Collection<String> publicationAuthorsNames = publication.getAuthorsNames();
+		Set<String> authorsNames = allAuthors.stream().map(AuthorDTO::getName).collect(Collectors.toSet());
+		
+		if (authorsNames.retainAll(publicationAuthorsNames)) {
+			publicationAuthors = allAuthors.stream()
+					.filter(author -> authorsNames.contains(author.getName()))
+					.collect(Collectors.toList());
+		}
+		
+		return publicationAuthors;
 	}
 
 	private static Collection<AuthorDTO> filterAuthorsFromOrganization(String organizationId,
