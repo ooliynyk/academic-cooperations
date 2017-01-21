@@ -37,9 +37,10 @@ public class ScholarOrganizationDao implements OrganizationDao {
 
 		try {
 			Document doc = docProvider.getSearchOrganizationDocument(URLEncoder.encode(organizationName, "utf-8"));
+
 			DocumentCrawler<OrganizationDetails> crawler = new InstitutionBlockCrawler(doc);
 			OrganizationDetails orgDetails = crawler.crawl();
-			
+
 			String crawledOrganizationName = orgDetails.getName();
 			String organizationId = orgDetails.getId();
 
