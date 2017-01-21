@@ -1,12 +1,12 @@
 var app = angular.module('academicPublicationsGraphApp', []);
 
-var PROJECT_URL = '/academic-publications'
+var PROJECT_URL = '/academic-cooperations'
 
 app.controller('PublicationsGraphController',
 		function PublicationsGraphController($scope, $http) {
 			$scope.search = function(university) {
 				$http.get(
-						PROJECT_URL + '/cooperation-network/by-coauthors?university='
+						PROJECT_URL + '/network/by-coauthors?university='
 								+ university).then(function(response) {
 					network = $scope.network(response.data);
 					networkLayer(network);

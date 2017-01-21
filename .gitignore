@@ -1,4 +1,4 @@
-src/main/java/vntu/academic/publications/crawl/parser/ScholarDocumentParserProvider.java
+src/main/java/vntu/academic/cooperation/crawl/ScholarDocumentProvider.java
 target/
 .mvn/
 !.mvn/wrapper/maven-wrapper.jar
