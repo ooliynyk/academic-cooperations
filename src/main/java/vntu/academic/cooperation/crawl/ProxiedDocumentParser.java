@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -16,6 +17,11 @@ import com.google.common.collect.ImmutableList;
 
 import vntu.academic.cooperation.helper.NetworkHelper;
 
+/**
+ * Document parser that proxying requests if this needed.
+ * By default proxy mode disabled.
+ * Proxy used only after first HTTP connection blocking occurs.
+ */
 @Service
 public class ProxiedDocumentParser implements DocumentParser {
 	private static final Logger logger = LoggerFactory.getLogger(ProxiedDocumentParser.class);
@@ -39,29 +45,42 @@ public class ProxiedDocumentParser implements DocumentParser {
 
 	private static final Random rand = new Random(System.currentTimeMillis());
 
+	private static final AtomicBoolean proxied = new AtomicBoolean(false);
+
 	public Document parseDocument(String url) throws DocumentParsingException {
 		Document doc = null;
-		for (int i = 1; i <= 3; i++) {
+		for (int attempt = 1; attempt <= 2; attempt++) {
 			try {
-				Proxy proxy = new Proxy(Proxy.Type.HTTP,
-						new InetSocketAddress(NetworkHelper.getLocalHostLANAddress(), 8118));
-				doc = Jsoup.connect(url).userAgent(getUserAgent()).timeout(4000 * i).proxy(proxy).get();
+				Proxy proxy = proxied.get() ? new Proxy(Proxy.Type.HTTP,
+						new InetSocketAddress(NetworkHelper.getLocalHostLANAddress(), 8118)) : null;
+
+				doc = Jsoup.connect(url).userAgent(getUserAgent()).timeout(3000 * attempt).proxy(proxy).get();
 				break;
 			} catch (HttpStatusException e) {
-				throw new DocumentParsingException("Document parsing blocked", e);
+				if (proxied.compareAndSet(false, true)) {
+					logger.warn("Document parsing blocked, enabling proxy mode");
+					proxied.set(true);
+					sleep(attempt);
+				} else {
+					throw new DocumentParsingException("Document parsing blocked", e);
+				}
 			} catch (Exception e) {
 				logger.warn("Document parsing from '{}' error", url, e);
-				try {
-					Thread.sleep(1000 * i);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
+				sleep(attempt);
 			}
 		}
 		if (doc == null)
 			throw new DocumentParsingException("Document parsing error");
 
 		return doc;
+	}
+	
+	private void sleep(int factor) {
+		try {
+			Thread.sleep(1000 * factor);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	private static String getUserAgent() {
