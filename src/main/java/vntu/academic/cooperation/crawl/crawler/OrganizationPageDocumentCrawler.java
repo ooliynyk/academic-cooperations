@@ -38,24 +38,21 @@ public final class OrganizationPageDocumentCrawler extends DocumentCrawler<Organ
 	}
 
 	private String crawlNextPageId() throws DocumentCrawlingException {
-		String nextPageLocation = null;
+		String nextPageId = null;
 
 		try {
-			String windowLocationAttribute = doc.select("button.gs_btnPR").first().attr("onclick");
+			String windowLocationAttribute = doc.select("button.gs_btnPR").attr("onclick");
 
 			String decodedLocation = URLDecoder.decode(windowLocationAttribute.replace("\\x", "%"), "UTF-8");
 
 			Matcher matcher = NEXT_PAGE_ID_PATTERN.matcher(decodedLocation);
-			if (matcher.find()) {
-				nextPageLocation = matcher.group(1);
-			} else {
-				throw new DocumentCrawlingException("Next page identifier not found");
-			}
+			
+			nextPageId = matcher.find() ? matcher.group(1) : null;
 		} catch (Exception e) {
 			throw new DocumentCrawlingException("Document crawling error: " + e.getMessage());
 		}
 
-		return nextPageLocation;
+		return nextPageId;
 	}
 
 	private String crawlOrganizationId() throws DocumentCrawlingException {

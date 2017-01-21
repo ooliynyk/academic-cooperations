@@ -131,6 +131,7 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 				.collect(Collectors.toSet());
 
 		return orgIdentifiers.parallelStream().map(id -> organizationService.fetchOrganizationById(id))
+				.filter(org -> org != null)
 				.collect(Collectors.toSet());
 	}
 

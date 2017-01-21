@@ -37,7 +37,7 @@ public class ScholarOrganizationService implements OrganizationService {
 		
 		Organization organization = orgDAO.findOrganizationById(organizationId);
 		if (organization == null)
-			throw new RuntimeException("Organization not found");
+			throw new RuntimeException("Organization not found!");
 
 		return new OrganizationDTO(organization);
 	}
