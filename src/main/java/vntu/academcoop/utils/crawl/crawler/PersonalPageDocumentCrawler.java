@@ -1,4 +1,4 @@
-package vntu.academcoop.crawl.crawler;
+package vntu.academcoop.utils.crawl.crawler;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,9 +12,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import vntu.academcoop.crawl.doc.PersonalPageDocument;
-import vntu.academcoop.crawl.doc.PersonalPageDocument.AuthorDetails;
-import vntu.academcoop.crawl.doc.PersonalPageDocument.PublicationDetails;
+import vntu.academcoop.model.Author;
+import vntu.academcoop.model.Publication;
+import vntu.academcoop.utils.crawl.doc.PersonalPageDocument;
 
 public final class PersonalPageDocumentCrawler extends DocumentCrawler<PersonalPageDocument> {
 
@@ -37,13 +37,13 @@ public final class PersonalPageDocumentCrawler extends DocumentCrawler<PersonalP
 
 	@Override
 	public PersonalPageDocument crawl() throws DocumentCrawlingException {
-		AuthorDetails authorDetails = authorCrawler.crawlAuthorDetials();
-		Collection<PublicationDetails> publications = publicationsCrawler.crawlPublicationsDetails();
+		Author authorDetails = authorCrawler.crawlAuthorDetials();
+		Collection<Publication> publications = publicationsCrawler.crawlPublicationsDetails();
 		boolean hasMorePublications = crawlHasMorePublications();
 
 		return new PersonalPageDocument(authorDetails, publications, hasMorePublications);
 	}
-	
+
 	public boolean crawlHasMorePublications() {
 		Element showMoreButton = doc.select("button#gsc_bpf_more.gs_btn_smd").first();
 
@@ -55,16 +55,17 @@ public final class PersonalPageDocumentCrawler extends DocumentCrawler<PersonalP
 		private final Pattern USER_ID_PATTERN = Pattern.compile("\\/citations\\?.*user=([^&]+)");
 		private final Pattern ORGANIZATION_PATTERN = Pattern.compile("\\/citations\\?.*org=([^&]+)");
 
-		public AuthorDetails crawlAuthorDetials() throws DocumentCrawlingException {
+		public Author crawlAuthorDetials() throws DocumentCrawlingException {
 			String authorId = crawlAuthorId();
 			String authorName = crawlAuthorName();
 			String organizationId = crawlOrganizationId();
-			return new AuthorDetails(authorId, authorName, organizationId);
+			boolean hasCoAuthors = crawlHasCoAuthors();
+			return new Author(authorId, authorName, organizationId, hasCoAuthors);
 		}
 
 		private String crawlAuthorId() throws DocumentCrawlingException {
 			String url = doc.location();
-			
+
 			Matcher matcher = USER_ID_PATTERN.matcher(url);
 			String authorId = matcher.find() ? matcher.group(1) : null;
 
@@ -102,6 +103,10 @@ public final class PersonalPageDocumentCrawler extends DocumentCrawler<PersonalP
 
 			return organizationId;
 		}
+
+		private boolean crawlHasCoAuthors() {
+			return !doc.select("div#gsc_rsb_co").isEmpty();
+		}
 	}
 
 	private class PublicationsCrawler {
@@ -110,19 +115,21 @@ public final class PersonalPageDocumentCrawler extends DocumentCrawler<PersonalP
 
 		private final Pattern PUBLICATION_ID_PATTERN = Pattern.compile("\\/citations\\?.*citation_for_view=([^&]+)");
 
-		public Collection<PublicationDetails> crawlPublicationsDetails() throws DocumentCrawlingException {
+		public Collection<Publication> crawlPublicationsDetails() throws DocumentCrawlingException {
 			Element publicationsTableElement = doc.select("table#gsc_a_t").first();
 			Elements publicationElements = publicationsTableElement.select("tbody#gsc_a_b").select("tr.gsc_a_tr");
 
-			Collection<PublicationDetails> publications = new ArrayList<>();
+			Collection<Publication> publications = new ArrayList<>();
 			for (Element publicationElement : publicationElements) {
+				Collection<String> authorsNames = crawlAuthorsNames(publicationElement);
+				if (authorsNames.size() < 2)
+					continue; // ignoring publications without any cooperation
+
 				String publicationTitle = crawlPublicationTitle(publicationElement);
 				String publicationId = crawlPublicationId(publicationElement);
-				Collection<String> authorsNames = crawlAuthorsNames(publicationElement);
 				Date publicationDate = crawlPublicationYear(publicationElement);
 
-				publications
-						.add(new PublicationDetails(publicationId, publicationTitle, authorsNames, publicationDate));
+				publications.add(new Publication(publicationId, publicationTitle, authorsNames, publicationDate));
 			}
 
 			return publications;

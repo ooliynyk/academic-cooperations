@@ -19,8 +19,8 @@ public class CooperationNetworkDTO {
 			organizations.put(orgId, organization);
 		} else {
 			OrganizationDTO storedOrganization = organizations.get(orgId);
-
-			int totalCooperationValue = storedOrganization.getCooperationValue() + organization.getCooperationValue();
+			Integer totalCooperationValue = storedOrganization.getCooperationValue()
+					+ organization.getCooperationValue();
 
 			storedOrganization.setCooperationValue(totalCooperationValue);
 		}

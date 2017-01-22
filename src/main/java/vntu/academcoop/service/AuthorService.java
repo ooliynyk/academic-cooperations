@@ -8,12 +8,10 @@ import vntu.academcoop.dto.OrganizationDTO;
 
 public interface AuthorService {
 
-	Collection<AuthorDTO> fetchAllAuthorsWithCoAuthorsByOrganization(OrganizationDTO organizationDTO);
+	Collection<AuthorDTO> fetchAllAuthorsWithCoAuthorsFromOrganization(OrganizationDTO organizationDTO);
 
-	Collection<AuthorDTO> fetchAllAuthorsWithPublicationsByOrganizationBetweenYears(OrganizationDTO organizationDTO,
+	Collection<AuthorDTO> fetchAllAuthorsWithCoAuthorsAndPublicationsBetweenYears(OrganizationDTO organizationDTO,
 			Date fromYear, Date toYear);
-
-	Collection<AuthorDTO> fetchAllAuthorsByOrganization(OrganizationDTO organizationDTO);
 
 	Collection<AuthorDTO> fetchAuthorsByIdentifiers(Collection<String> authorsIdentifiers);
 

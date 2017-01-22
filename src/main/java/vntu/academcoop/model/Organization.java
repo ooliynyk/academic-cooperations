@@ -6,7 +6,6 @@ public class Organization {
 	private final String name;
 
 	public Organization(String id, String name) {
-		super();
 		this.id = id;
 		this.name = name;
 	}

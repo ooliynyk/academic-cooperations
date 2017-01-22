@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import vntu.academcoop.dto.CooperationNetworkDTO;
 import vntu.academcoop.service.AcademicCooperationService;
-import vntu.academcoop.service.MockedAcademicPublicationService;
 
 @RestController
 @RequestMapping("/network")
@@ -58,14 +57,6 @@ public class NetworkSearchController {
 		logger.info("Searching was finished, elapsed time: {}s", stopWatch.getTotalTimeSeconds());
 
 		return publicationNetwork;
-	}
-
-	@GetMapping("/search-mock")
-	public CooperationNetworkDTO searchTest(@RequestParam String university)
-			throws InterruptedException, ExecutionException {
-		logger.info("Searching mock", university);
-
-		return new MockedAcademicPublicationService().fetchCoAuthorsCooperationNetwork(university);
 	}
 
 }

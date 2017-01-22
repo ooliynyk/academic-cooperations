@@ -30,31 +30,20 @@ public class ScholarAuthorService implements AuthorService {
 	}
 
 	@Override
-	public Collection<AuthorDTO> fetchAllAuthorsWithCoAuthorsByOrganization(OrganizationDTO organizationDTO) {
+	public Collection<AuthorDTO> fetchAllAuthorsWithCoAuthorsFromOrganization(OrganizationDTO organizationDTO) {
 		logger.info("Fetching authors with co-authors");
 
-		Collection<AuthorDTO> authorDTOs = fetchAllAuthorsByOrganization(organizationDTO);
+		Collection<Author> authors = authorDao.findAllAuthorsByOrganizationId(organizationDTO.getId());
 
-		authorDTOs.parallelStream().forEach((AuthorDTO authorDTO) -> {
-			Collection<String> coAuthorsIdentifiers = authorDao.findCoAuthorsIdentifiersByAuthorId(authorDTO.getId());
-
-			Collection<Author> coAuthors = coAuthorsIdentifiers.parallelStream()
-					.filter(coAuthorId -> hasCommunication(authorDTO.getId(), coAuthorId))
-					.map(coAuthorId -> authorDao.findAuthorById(coAuthorId)).filter(coAuthor -> coAuthor != null)
-					.collect(Collectors.toList());
-
-			authorDTO.setCoAuthors(coAuthors);
-		});
-
-		return authorDTOs;
+		return findCoAuthorsAndMapToDTOs(authors);
 	}
-
+	
 	@Override
-	public Collection<AuthorDTO> fetchAllAuthorsWithPublicationsByOrganizationBetweenYears(
+	public Collection<AuthorDTO> fetchAllAuthorsWithCoAuthorsAndPublicationsBetweenYears(
 			OrganizationDTO organizationDTO, Date fromYear, Date toYear) {
 		logger.info("Fetching authors with publications");
 
-		Collection<AuthorDTO> authorDTOs = fetchAllAuthorsByOrganization(organizationDTO);
+		Collection<AuthorDTO> authorDTOs = fetchAllAuthorsWithCoAuthorsFromOrganization(organizationDTO);
 
 		authorDTOs.parallelStream().forEach((AuthorDTO authorDTO) -> {
 			Collection<Publication> publications = publicationService
@@ -64,21 +53,6 @@ public class ScholarAuthorService implements AuthorService {
 		});
 
 		return authorDTOs;
-	}
-
-	@Override
-	public Collection<AuthorDTO> fetchAllAuthorsByOrganization(OrganizationDTO organizationDTO) {
-		logger.info("Fetching authors by organization '{}'", organizationDTO);
-
-		Collection<Author> authors = authorDao.findAllAuthorsByOrganizationId(organizationDTO.getId());
-
-		return authors.parallelStream().map((Author author) -> new AuthorDTO(author)).collect(Collectors.toList());
-	}
-
-	private boolean hasCommunication(String authorId, String coAuthorId) {
-		Collection<String> coAuthorsIdentifiers = authorDao.findCoAuthorsIdentifiersByAuthorId(coAuthorId);
-
-		return coAuthorsIdentifiers.contains(authorId);
 	}
 
 	@Override
@@ -93,6 +67,34 @@ public class ScholarAuthorService implements AuthorService {
 		}
 
 		return authors;
+	}
+	
+	private Collection<AuthorDTO> findCoAuthorsAndMapToDTOs(Collection<Author> authors) {
+		Collection<AuthorDTO> authorDTOs = new ArrayList<>();
+		authors.parallelStream()
+			.forEach((Author author) -> {
+				AuthorDTO authorDTO = new AuthorDTO(author);
+
+				if (author.hasCoAuthors()) {
+					Collection<String> coAuthorsIdentifiers = authorDao.findCoAuthorsIdentifiersByAuthorId(author.getId());
+					Collection<Author> coAuthors = coAuthorsIdentifiers.parallelStream()
+							.filter(coAuthorId -> hasCommunication(author.getId(), coAuthorId))
+							.map(coAuthorId -> authorDao.findAuthorById(coAuthorId))
+							.filter(coAuthor -> coAuthor != null)
+							.collect(Collectors.toList());
+					authorDTO.setCoAuthors(coAuthors);
+				}
+
+				authorDTOs.add(authorDTO);
+			});
+		
+		return authorDTOs;
+	}
+
+	private boolean hasCommunication(String authorId, String coAuthorId) {
+		Collection<String> coAuthorsIdentifiers = authorDao.findCoAuthorsIdentifiersByAuthorId(coAuthorId);
+
+		return coAuthorsIdentifiers.contains(authorId);
 	}
 
 }

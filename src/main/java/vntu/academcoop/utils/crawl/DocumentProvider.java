@@ -1,4 +1,4 @@
-package vntu.academcoop.crawl;
+package vntu.academcoop.utils.crawl;
 
 import org.jsoup.nodes.Document;
 

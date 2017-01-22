@@ -1,15 +1,17 @@
 package vntu.academcoop.model;
 
 public class Author {
+	
 	private final String id;
 	private final String name;
 	private final String organizationId;
+	private final boolean hasCoAuthors;
 
-	public Author(String id, String name, String organizationId) {
-		super();
+	public Author(String id, String name, String organizationId, boolean hasCoAuthors) {
 		this.id = id;
 		this.name = name;
 		this.organizationId = organizationId;
+		this.hasCoAuthors = hasCoAuthors;
 	}
 
 	public String getId() {
@@ -22,6 +24,10 @@ public class Author {
 
 	public String getOrganizationId() {
 		return organizationId;
+	}
+
+	public boolean hasCoAuthors() {
+		return hasCoAuthors;
 	}
 
 	@Override
@@ -63,7 +69,8 @@ public class Author {
 
 	@Override
 	public String toString() {
-		return "Author [id=" + id + ", name=" + name + ", organizationId=" + organizationId + "]";
+		return "Author [id=" + id + ", name=" + name + ", organizationId=" + organizationId + ", hasCoAuthors="
+				+ hasCoAuthors + "]";
 	}
 
 }

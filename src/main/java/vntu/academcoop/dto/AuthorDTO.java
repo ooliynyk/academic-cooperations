@@ -8,6 +8,7 @@ import vntu.academcoop.model.Author;
 import vntu.academcoop.model.Publication;
 
 public class AuthorDTO {
+	
 	private String id;
 	private String name;
 	private String organizationId;
@@ -59,6 +60,11 @@ public class AuthorDTO {
 
 	public void setPublications(Collection<Publication> publications) {
 		this.publications = new LinkedHashSet<>(publications);
+	}
+
+	@Override
+	public String toString() {
+		return "AuthorDTO [name=" + name + "]";
 	}
 
 }

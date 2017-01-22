@@ -8,4 +8,6 @@ public interface PublicationDao {
 
 	Collection<Publication> findAllPublicationsByAuthorId(String authorId);
 
+	Collection<String> findAllAuthorsNamesByPublicationId(String publicationId);
+
 }

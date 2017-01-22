@@ -9,13 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import vntu.academcoop.crawl.DocumentProvider;
-import vntu.academcoop.crawl.crawler.DocumentCrawler;
-import vntu.academcoop.crawl.crawler.InstitutionBlockCrawler;
-import vntu.academcoop.crawl.crawler.OrganizationPageDocumentCrawler;
-import vntu.academcoop.crawl.doc.OrganizationPageDocument;
-import vntu.academcoop.crawl.doc.OrganizationPageDocument.OrganizationDetails;
 import vntu.academcoop.model.Organization;
+import vntu.academcoop.utils.crawl.DocumentProvider;
+import vntu.academcoop.utils.crawl.crawler.DocumentCrawler;
+import vntu.academcoop.utils.crawl.crawler.InstitutionBlockCrawler;
+import vntu.academcoop.utils.crawl.crawler.OrganizationPageDocumentCrawler;
+import vntu.academcoop.utils.crawl.doc.OrganizationPageDocument;
 
 @Repository
 public class ScholarOrganizationDao implements OrganizationDao {
@@ -38,13 +37,9 @@ public class ScholarOrganizationDao implements OrganizationDao {
 		try {
 			Document doc = docProvider.getSearchOrganizationDocument(URLEncoder.encode(organizationName, "utf-8"));
 
-			DocumentCrawler<OrganizationDetails> crawler = new InstitutionBlockCrawler(doc);
-			OrganizationDetails orgDetails = crawler.crawl();
+			DocumentCrawler<Organization> crawler = new InstitutionBlockCrawler(doc);
 
-			String crawledOrganizationName = orgDetails.getName();
-			String organizationId = orgDetails.getId();
-
-			organization = new Organization(organizationId, crawledOrganizationName);
+			organization = crawler.crawl();
 		} catch (Exception e) {
 			logger.warn("Finding organization by name '{}', error: {}", organizationName, e.getMessage());
 		}
@@ -53,7 +48,7 @@ public class ScholarOrganizationDao implements OrganizationDao {
 	}
 
 	@Override
-	@Cacheable("organization-by-id")
+	@Cacheable(value = "organization-by-id")
 	public Organization findOrganizationById(String organizationId) {
 		logger.info("Finding organization by id '{}'", organizationId);
 
@@ -63,9 +58,8 @@ public class ScholarOrganizationDao implements OrganizationDao {
 			DocumentCrawler<OrganizationPageDocument> crawler = new OrganizationPageDocumentCrawler(doc);
 
 			OrganizationPageDocument organizationPageDoc = crawler.crawl();
-			OrganizationDetails orgDetails = organizationPageDoc.getOrganizationDetails();
 
-			organization = new Organization(orgDetails.getId(), orgDetails.getName());
+			organization = organizationPageDoc.getOrganizationDetails();
 		} catch (Exception e) {
 			logger.warn("Finding organization by id '{}', error: {}", organizationId, e.getMessage());
 		}

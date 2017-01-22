@@ -7,7 +7,7 @@ public class OrganizationDTO {
 	private String id;
 	private String name;
 
-	private Integer cooperationValue;
+	private Integer cooperationValue = 0;
 
 	public OrganizationDTO(Organization organization) {
 		this.id = organization.getId();

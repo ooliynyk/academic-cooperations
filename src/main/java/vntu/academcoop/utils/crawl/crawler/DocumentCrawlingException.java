@@ -1,4 +1,4 @@
-package vntu.academcoop.crawl.crawler;
+package vntu.academcoop.utils.crawl.crawler;
 
 public class DocumentCrawlingException extends Exception {
 

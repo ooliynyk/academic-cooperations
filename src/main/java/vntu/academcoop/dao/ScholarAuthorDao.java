@@ -12,15 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import vntu.academcoop.crawl.DocumentProvider;
-import vntu.academcoop.crawl.crawler.AuthorsCrawler;
-import vntu.academcoop.crawl.crawler.DocumentCrawler;
-import vntu.academcoop.crawl.crawler.OrganizationPageDocumentCrawler;
-import vntu.academcoop.crawl.crawler.PersonalPageDocumentCrawler;
-import vntu.academcoop.crawl.doc.OrganizationPageDocument;
-import vntu.academcoop.crawl.doc.PersonalPageDocument;
-import vntu.academcoop.crawl.doc.PersonalPageDocument.AuthorDetails;
 import vntu.academcoop.model.Author;
+import vntu.academcoop.utils.crawl.DocumentProvider;
+import vntu.academcoop.utils.crawl.crawler.AuthorsCrawler;
+import vntu.academcoop.utils.crawl.crawler.DocumentCrawler;
+import vntu.academcoop.utils.crawl.crawler.OrganizationPageDocumentCrawler;
+import vntu.academcoop.utils.crawl.crawler.PersonalPageDocumentCrawler;
+import vntu.academcoop.utils.crawl.doc.OrganizationPageDocument;
+import vntu.academcoop.utils.crawl.doc.PersonalPageDocument;
 
 @Repository
 public class ScholarAuthorDao implements AuthorDao {
@@ -53,10 +52,9 @@ public class ScholarAuthorDao implements AuthorDao {
 				OrganizationPageDocument organizationPageDoc = crawler.crawl();
 
 				Collection<String> authorsIdentifiers = organizationPageDoc.getAuthorsIdentifiers();
-				Collection<Author> authorsOnPage = authorsIdentifiers.parallelStream()
-					.map(id -> findAuthorById(id))
-					.collect(Collectors.toList());
-				
+				Collection<Author> authorsOnPage = authorsIdentifiers.parallelStream().map(id -> findAuthorById(id))
+						.collect(Collectors.toList());
+
 				authors.addAll(authorsOnPage);
 
 				nextPageId = organizationPageDoc.getNextPageId();
@@ -69,7 +67,7 @@ public class ScholarAuthorDao implements AuthorDao {
 	}
 
 	@Override
-	@Cacheable("author-by-id")
+	@Cacheable(value = "author-by-id")
 	public Author findAuthorById(final String authorId) {
 		logger.info("Finding author by id '{}'", authorId);
 
@@ -83,9 +81,7 @@ public class ScholarAuthorDao implements AuthorDao {
 			DocumentCrawler<PersonalPageDocument> crawler = new PersonalPageDocumentCrawler(doc);
 
 			PersonalPageDocument personalPageDoc = crawler.crawl();
-			AuthorDetails authorDetails = personalPageDoc.getAuthorDetails();
-
-			author = new Author(authorDetails.getId(), authorDetails.getName(), authorDetails.getOrganizationId());
+			author = personalPageDoc.getAuthorDetails();
 		} catch (Exception e) {
 			logger.warn("Finding author by id '{}' error: {}", authorId, e.getMessage());
 		}

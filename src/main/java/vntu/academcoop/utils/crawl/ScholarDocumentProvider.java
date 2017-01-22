@@ -1,4 +1,4 @@
-package vntu.academcoop.crawl;
+package vntu.academcoop.utils.crawl;
 
 import java.util.Collection;
 
@@ -6,16 +6,16 @@ import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import vntu.academcoop.crawl.crawler.AuthorsCrawler;
-import vntu.academcoop.crawl.crawler.DocumentCrawler;
-import vntu.academcoop.crawl.crawler.DocumentCrawlingException;
-import vntu.academcoop.crawl.crawler.InstitutionBlockCrawler;
-import vntu.academcoop.crawl.crawler.OrganizationPageDocumentCrawler;
-import vntu.academcoop.crawl.crawler.PersonalPageDocumentCrawler;
-import vntu.academcoop.crawl.crawler.PublicationAuthorsCrawler;
-import vntu.academcoop.crawl.doc.OrganizationPageDocument;
-import vntu.academcoop.crawl.doc.PersonalPageDocument;
-import vntu.academcoop.crawl.doc.OrganizationPageDocument.OrganizationDetails;
+import vntu.academcoop.model.Organization;
+import vntu.academcoop.utils.crawl.crawler.AuthorsCrawler;
+import vntu.academcoop.utils.crawl.crawler.DocumentCrawler;
+import vntu.academcoop.utils.crawl.crawler.DocumentCrawlingException;
+import vntu.academcoop.utils.crawl.crawler.InstitutionBlockCrawler;
+import vntu.academcoop.utils.crawl.crawler.OrganizationPageDocumentCrawler;
+import vntu.academcoop.utils.crawl.crawler.PersonalPageDocumentCrawler;
+import vntu.academcoop.utils.crawl.crawler.PublicationAuthorsCrawler;
+import vntu.academcoop.utils.crawl.doc.OrganizationPageDocument;
+import vntu.academcoop.utils.crawl.doc.PersonalPageDocument;
 
 @Service
 public class ScholarDocumentProvider implements DocumentProvider {
@@ -24,13 +24,12 @@ public class ScholarDocumentProvider implements DocumentProvider {
 	private static final String CO_AUTHORS_BY_AUTHOR_ID_URL_TEMPLATE = "https://scholar.google.com/citations?view_op=list_colleagues&hl=en&user=%s";
 	private static final String ORGANIZATION_PAGE_URL_TEMPLATE = "https://scholar.google.com/citations?view_op=view_org&hl=en&org=%s&after_author=%s";
 	private static final String SEARCH_ORGANIZATION_BY_NAME_URL_TEMPLATE = "https://scholar.google.com/citations?mauthors=%s&hl=uk&view_op=search_authors";
-	private static final String PUBLICATION_URL_TEMPLATE = "https://scholar.google.com/citations?view_op=view_citation&citation_for_view=%s";
+	private static final String PUBLICATION_URL_TEMPLATE = "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=%s&citation_for_view=%s";
 
 	private final DocumentParser documentParser;
 
 	@Autowired
 	public ScholarDocumentProvider(DocumentParser proxiedDocumentParser) {
-		super();
 		this.documentParser = proxiedDocumentParser;
 	}
 
@@ -58,12 +57,13 @@ public class ScholarDocumentProvider implements DocumentProvider {
 
 	@Override
 	public Document getPublicationDocument(String publicationId) throws DocumentParsingException {
-		return documentParser.parseDocument(String.format(PUBLICATION_URL_TEMPLATE, publicationId));
+		String authorId = publicationId.split(":")[0];
+		return documentParser.parseDocument(String.format(PUBLICATION_URL_TEMPLATE, authorId, publicationId));
 	}
-	
+
 	public static void main1(String[] args) throws DocumentParsingException, DocumentCrawlingException {
 		DocumentProvider docProvider = new ScholarDocumentProvider(new ProxiedDocumentParser());
-		Document doc = docProvider.getPersonalPageDocument("4POyYXgAAAAJ", 0, 100);
+		Document doc = docProvider.getPersonalPageDocument("PFhuy-QAAAAJ", 0, 100);
 		// LnnWtiwAAAAJ
 		// 4POyYXgAAAAJ
 
@@ -71,7 +71,7 @@ public class ScholarDocumentProvider implements DocumentProvider {
 
 		PersonalPageDocument page = crawler.crawl();
 
-		System.out.println(page.getAuthorDetails());
+		System.out.println(page.getAuthorDetails().hasCoAuthors());
 		System.out.println(page.getPublications());
 		System.out.println(page.getPublications().size());
 		System.out.println(page.hasMorePublications());
@@ -102,15 +102,15 @@ public class ScholarDocumentProvider implements DocumentProvider {
 		DocumentProvider docProvider = new ScholarDocumentProvider(new ProxiedDocumentParser());
 		Document doc = docProvider.getSearchOrganizationDocument("Вінницький національний технічний університет");
 
-		DocumentCrawler<OrganizationDetails> crawler = new InstitutionBlockCrawler(doc);
-		OrganizationDetails details = crawler.crawl();
+		DocumentCrawler<Organization> crawler = new InstitutionBlockCrawler(doc);
+		Organization details = crawler.crawl();
 		System.out.println(details);
 	}
-	
+
 	public static void main(String[] args) throws DocumentParsingException, DocumentCrawlingException {
 		DocumentProvider docProvider = new ScholarDocumentProvider(new ProxiedDocumentParser());
 		Document doc = docProvider.getPublicationDocument("gUMCk_AAAAAJ:u5HHmVD_uO8C");
-		
+
 		System.out.println(doc);
 		DocumentCrawler<Collection<String>> crawler = new PublicationAuthorsCrawler(doc);
 		System.out.println(crawler.crawl());

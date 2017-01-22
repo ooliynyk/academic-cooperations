@@ -1,4 +1,4 @@
-package vntu.academcoop.crawl.crawler;
+package vntu.academcoop.utils.crawl.crawler;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import vntu.academcoop.crawl.doc.OrganizationPageDocument.OrganizationDetails;
+import vntu.academcoop.model.Organization;
 
-public class InstitutionBlockCrawler extends DocumentCrawler<OrganizationDetails> {
+public class InstitutionBlockCrawler extends DocumentCrawler<Organization> {
 
 	private static final Pattern ORGANIZATION_ID_PATTERN = Pattern.compile("\\/citations?.*org=([^&]+)");
 
@@ -17,9 +17,9 @@ public class InstitutionBlockCrawler extends DocumentCrawler<OrganizationDetails
 	}
 
 	@Override
-	public OrganizationDetails crawl() throws DocumentCrawlingException {
+	public Organization crawl() throws DocumentCrawlingException {
 		Element organizationLink = doc.select("div.gsc_instbox_sec").select("h3.gsc_inst_res").select("a").first();
-		if (organizationLink == null) 
+		if (organizationLink == null)
 			throw new DocumentCrawlingException("Organization details not specified");
 
 		String href = organizationLink.attr("href");
@@ -28,10 +28,10 @@ public class InstitutionBlockCrawler extends DocumentCrawler<OrganizationDetails
 		String organizationId = matcher.find() ? matcher.group(1) : null;
 		if (organizationId == null)
 			throw new DocumentCrawlingException("Organization identifier not found");
-		
+
 		String organizationName = organizationLink.text();
 
-		return new OrganizationDetails(organizationId, organizationName);
+		return new Organization(organizationId, organizationName);
 	}
 
 }

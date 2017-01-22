@@ -1,4 +1,4 @@
-package vntu.academcoop.crawl.crawler;
+package vntu.academcoop.utils.crawl.crawler;
 
 import java.net.URLDecoder;
 import java.util.Collection;
@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import vntu.academcoop.crawl.doc.OrganizationPageDocument;
-import vntu.academcoop.crawl.doc.OrganizationPageDocument.OrganizationDetails;
+import vntu.academcoop.model.Organization;
+import vntu.academcoop.utils.crawl.doc.OrganizationPageDocument;
 
 public final class OrganizationPageDocumentCrawler extends DocumentCrawler<OrganizationPageDocument> {
 
@@ -30,7 +30,7 @@ public final class OrganizationPageDocumentCrawler extends DocumentCrawler<Organ
 		String orgId = crawlOrganizationId();
 		String orgName = crawlOrganizationName();
 
-		OrganizationDetails orgDetails = new OrganizationDetails(orgId, orgName);
+		Organization orgDetails = new Organization(orgId, orgName);
 		Collection<String> authorsIds = authorsIdentifiersCrawler.crawl();
 		String nextPageId = crawlNextPageId();
 

@@ -12,17 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import vntu.academcoop.crawl.DocumentParsingException;
-import vntu.academcoop.crawl.DocumentProvider;
-import vntu.academcoop.crawl.ProxiedDocumentParser;
-import vntu.academcoop.crawl.ScholarDocumentProvider;
-import vntu.academcoop.crawl.crawler.DocumentCrawler;
-import vntu.academcoop.crawl.crawler.DocumentCrawlingException;
-import vntu.academcoop.crawl.crawler.PersonalPageDocumentCrawler;
-import vntu.academcoop.crawl.crawler.PublicationAuthorsCrawler;
-import vntu.academcoop.crawl.doc.PersonalPageDocument;
-import vntu.academcoop.crawl.doc.PersonalPageDocument.PublicationDetails;
 import vntu.academcoop.model.Publication;
+import vntu.academcoop.utils.crawl.DocumentParsingException;
+import vntu.academcoop.utils.crawl.DocumentProvider;
+import vntu.academcoop.utils.crawl.ProxiedDocumentParser;
+import vntu.academcoop.utils.crawl.ScholarDocumentProvider;
+import vntu.academcoop.utils.crawl.crawler.DocumentCrawler;
+import vntu.academcoop.utils.crawl.crawler.DocumentCrawlingException;
+import vntu.academcoop.utils.crawl.crawler.PersonalPageDocumentCrawler;
+import vntu.academcoop.utils.crawl.crawler.PublicationAuthorsCrawler;
+import vntu.academcoop.utils.crawl.doc.PersonalPageDocument;
 
 @Repository
 public class ScholarPublicationDao implements PublicationDao {
@@ -54,14 +53,12 @@ public class ScholarPublicationDao implements PublicationDao {
 
 				PersonalPageDocument personalPageDoc = crawler.crawl();
 
-				Collection<PublicationDetails> publicationsDetails = personalPageDoc.getPublications();
+				for (Publication publication : personalPageDoc.getPublications()) {
+					String id = publication.getId();
+					String title = publication.getTitle();
+					Collection<String> authorsNames = findAuthorsNames(publication);
 
-				for (PublicationDetails publicationDetails : publicationsDetails) {
-					String id = publicationDetails.getId();
-					String title = publicationDetails.getTitle();
-					Collection<String> authorsNames = findAuthorsNames(publicationDetails);
-					
-					Date publicationDate = publicationDetails.getPublicationDate();
+					Date publicationDate = publication.getPublicationDate();
 					publications.add(new Publication(id, title, authorsNames, publicationDate));
 				}
 
@@ -77,19 +74,34 @@ public class ScholarPublicationDao implements PublicationDao {
 
 		return publications;
 	}
-	
-	private Collection<String> findAuthorsNames(PublicationDetails publicationDetails) throws DocumentParsingException, DocumentCrawlingException {
-		List<String> authorsNames = new ArrayList<>(publicationDetails.getAuthorNames());
+
+	@Override
+	@Cacheable("authors-names-by-publicationId")
+	public Collection<String> findAllAuthorsNamesByPublicationId(String publicationId) {
+		logger.info("Finding authors by publication id '{}'", publicationId);
+		Collection<String> authorsNames = null;
+		try {
+			Document doc = docProvider.getPublicationDocument(publicationId);
+			DocumentCrawler<Collection<String>> crawler = new PublicationAuthorsCrawler(doc);
+			authorsNames = crawler.crawl();
+		} catch (Exception e) {
+			logger.warn("Finding authors by publication id '{}' error: '{}'", publicationId, e.getMessage());
+		}
+
+		return authorsNames;
+	}
+
+	private Collection<String> findAuthorsNames(Publication publicationDetails)
+			throws DocumentParsingException, DocumentCrawlingException {
+		List<String> authorsNames = new ArrayList<>(publicationDetails.getAuthorsNames());
 		if (authorsNames.isEmpty())
 			throw new IllegalArgumentException("Publication authors not specified");
-		
+
 		int lastAuthor = authorsNames.size() - 1;
 		if (authorsNames.get(lastAuthor).equals("...")) {
-			Document doc = docProvider.getPublicationDocument(publicationDetails.getId());
-			DocumentCrawler<Collection<String>> crawler = new PublicationAuthorsCrawler(doc);
-			authorsNames = new ArrayList<>(crawler.crawl());
+			authorsNames = new ArrayList<>(findAllAuthorsNamesByPublicationId(publicationDetails.getId()));
 		}
-		
+
 		return authorsNames;
 	}
 
