@@ -7,6 +7,8 @@ SearchByEnum = {
 	PUBLICATIONS : 1
 };
 
+var EDGE_MAX_VALUE = 8.0;
+
 app.controller('PublicationsGraphController',
 		function PublicationsGraphController($scope, $http) {
 			$scope.search = function(university) {
@@ -14,12 +16,14 @@ app.controller('PublicationsGraphController',
 
 				var url = null;
 				if (searchBy == SearchByEnum.CO_AUTHORS) {
-					url = PROJECT_URL + '/network/by-coauthors?university=' + university;
+					url = PROJECT_URL + '/network/by-coauthors?university='
+							+ university;
 				} else if (searchBy == SearchByEnum.PUBLICATIONS) {
 					var fromYear = $scope.fromYear;
 					var toYear = $scope.toYear;
 
-					url = PROJECT_URL + '/network/by-publications?university=' + university;
+					url = PROJECT_URL + '/network/by-publications?university='
+							+ university;
 					if (fromYear != undefined) {
 						url += '&fromYear=' + fromYear;
 					}
@@ -47,6 +51,7 @@ app.controller('PublicationsGraphController',
 
 				var orgs = cooperationNetwork.organizations;
 
+				var edgeValueCoef = calculateEdgeValueCoef(cooperationNetwork);
 				for ( var id in orgs) {
 					nodes.push({
 						id : id,
@@ -54,10 +59,11 @@ app.controller('PublicationsGraphController',
 						label : orgs[id].name
 					});
 					if (id != rootId) {
+						var cooperationValue = orgs[id].cooperationValue * edgeValueCoef;
 						edges.push({
 							from : rootId,
 							to : orgs[id].id,
-							value : orgs[id].cooperationValue
+							value : Math.max(cooperationValue, 1)
 						});
 					}
 				}
@@ -70,6 +76,22 @@ app.controller('PublicationsGraphController',
 			};
 
 		});
+
+function calculateEdgeValueCoef(cooperationNetwork) {
+	var rootId = cooperationNetwork.rootOrganizationId;
+	var orgs = cooperationNetwork.organizations;
+
+	var maxCooperationValue = 0;
+	for ( var id in orgs) {
+		if (id != rootId) {
+			if (orgs[id].cooperationValue > maxCooperationValue) {
+				maxCooperationValue = orgs[id].cooperationValue;
+			}
+		}
+	}
+
+	return EDGE_MAX_VALUE / maxCooperationValue;
+}
 
 function getSearchBy() {
 	var searchByElement = document.getElementById("searchBy");

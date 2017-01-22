@@ -1,4 +1,4 @@
-package vntu.academcoop.utils.crawl;
+package vntu.academcoop.utils.crawling;
 
 public class DocumentParsingException extends Exception {
 

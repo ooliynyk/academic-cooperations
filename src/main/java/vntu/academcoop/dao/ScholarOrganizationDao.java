@@ -10,11 +10,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import vntu.academcoop.model.Organization;
-import vntu.academcoop.utils.crawl.DocumentProvider;
-import vntu.academcoop.utils.crawl.crawler.DocumentCrawler;
-import vntu.academcoop.utils.crawl.crawler.InstitutionBlockCrawler;
-import vntu.academcoop.utils.crawl.crawler.OrganizationPageDocumentCrawler;
-import vntu.academcoop.utils.crawl.doc.OrganizationPageDocument;
+import vntu.academcoop.utils.crawling.DocumentProvider;
+import vntu.academcoop.utils.crawling.crawler.DocumentCrawler;
+import vntu.academcoop.utils.crawling.crawler.InstitutionBlockCrawler;
+import vntu.academcoop.utils.crawling.crawler.OrganizationPageDocumentCrawler;
+import vntu.academcoop.utils.crawling.doc.OrganizationPageDocument;
 
 @Repository
 public class ScholarOrganizationDao implements OrganizationDao {

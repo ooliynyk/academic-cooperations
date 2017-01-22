@@ -13,15 +13,15 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import vntu.academcoop.model.Publication;
-import vntu.academcoop.utils.crawl.DocumentParsingException;
-import vntu.academcoop.utils.crawl.DocumentProvider;
-import vntu.academcoop.utils.crawl.ProxiedDocumentParser;
-import vntu.academcoop.utils.crawl.ScholarDocumentProvider;
-import vntu.academcoop.utils.crawl.crawler.DocumentCrawler;
-import vntu.academcoop.utils.crawl.crawler.DocumentCrawlingException;
-import vntu.academcoop.utils.crawl.crawler.PersonalPageDocumentCrawler;
-import vntu.academcoop.utils.crawl.crawler.PublicationAuthorsCrawler;
-import vntu.academcoop.utils.crawl.doc.PersonalPageDocument;
+import vntu.academcoop.utils.crawling.DocumentParsingException;
+import vntu.academcoop.utils.crawling.DocumentProvider;
+import vntu.academcoop.utils.crawling.ProxiedDocumentParser;
+import vntu.academcoop.utils.crawling.ScholarDocumentProvider;
+import vntu.academcoop.utils.crawling.crawler.DocumentCrawler;
+import vntu.academcoop.utils.crawling.crawler.DocumentCrawlingException;
+import vntu.academcoop.utils.crawling.crawler.PersonalPageDocumentCrawler;
+import vntu.academcoop.utils.crawling.crawler.PublicationAuthorsCrawler;
+import vntu.academcoop.utils.crawling.doc.PersonalPageDocument;
 
 @Repository
 public class ScholarPublicationDao implements PublicationDao {
@@ -39,7 +39,7 @@ public class ScholarPublicationDao implements PublicationDao {
 	@Cacheable("publications")
 	public Collection<Publication> findAllPublicationsByAuthorId(String authorId) {
 		logger.info("Finding publications by author id '{}'", authorId);
-
+		
 		Collection<Publication> publications = new ArrayList<>();
 
 		final int PAGE_SIZE = 100;
@@ -47,7 +47,8 @@ public class ScholarPublicationDao implements PublicationDao {
 			int pageNumber = 0;
 			while (true) {
 				int startFrom = pageNumber * PAGE_SIZE;
-
+				logger.debug("Finding publications by author id '{}' start from {}p", authorId, startFrom);
+				
 				Document doc = docProvider.getPersonalPageDocument(authorId, startFrom, PAGE_SIZE);
 				DocumentCrawler<PersonalPageDocument> crawler = new PersonalPageDocumentCrawler(doc);
 

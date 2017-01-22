@@ -1,4 +1,4 @@
-package vntu.academcoop.utils.crawl.doc;
+package vntu.academcoop.utils.crawling.doc;
 
 import java.util.Collection;
 

@@ -1,4 +1,4 @@
-package vntu.academcoop.utils.crawl.crawler;
+package vntu.academcoop.utils.crawling.crawler;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import org.jsoup.select.Elements;
 
 import vntu.academcoop.model.Author;
 import vntu.academcoop.model.Publication;
-import vntu.academcoop.utils.crawl.doc.PersonalPageDocument;
+import vntu.academcoop.utils.crawling.doc.PersonalPageDocument;
 
 public final class PersonalPageDocumentCrawler extends DocumentCrawler<PersonalPageDocument> {
 

@@ -13,13 +13,13 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import vntu.academcoop.model.Author;
-import vntu.academcoop.utils.crawl.DocumentProvider;
-import vntu.academcoop.utils.crawl.crawler.AuthorsCrawler;
-import vntu.academcoop.utils.crawl.crawler.DocumentCrawler;
-import vntu.academcoop.utils.crawl.crawler.OrganizationPageDocumentCrawler;
-import vntu.academcoop.utils.crawl.crawler.PersonalPageDocumentCrawler;
-import vntu.academcoop.utils.crawl.doc.OrganizationPageDocument;
-import vntu.academcoop.utils.crawl.doc.PersonalPageDocument;
+import vntu.academcoop.utils.crawling.DocumentProvider;
+import vntu.academcoop.utils.crawling.crawler.AuthorsCrawler;
+import vntu.academcoop.utils.crawling.crawler.DocumentCrawler;
+import vntu.academcoop.utils.crawling.crawler.OrganizationPageDocumentCrawler;
+import vntu.academcoop.utils.crawling.crawler.PersonalPageDocumentCrawler;
+import vntu.academcoop.utils.crawling.doc.OrganizationPageDocument;
+import vntu.academcoop.utils.crawling.doc.PersonalPageDocument;
 
 @Repository
 public class ScholarAuthorDao implements AuthorDao {

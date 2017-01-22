@@ -1,4 +1,4 @@
-package vntu.academcoop.utils.crawl;
+package vntu.academcoop.utils.crawling;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;

@@ -1,4 +1,4 @@
-package vntu.academcoop.utils.crawl.crawler;
+package vntu.academcoop.utils.crawling.crawler;
 
 import java.net.URLDecoder;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import vntu.academcoop.model.Organization;
-import vntu.academcoop.utils.crawl.doc.OrganizationPageDocument;
+import vntu.academcoop.utils.crawling.doc.OrganizationPageDocument;
 
 public final class OrganizationPageDocumentCrawler extends DocumentCrawler<OrganizationPageDocument> {
 

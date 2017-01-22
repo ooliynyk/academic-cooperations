@@ -45,12 +45,14 @@ public class ScholarAuthorService implements AuthorService {
 
 		Collection<AuthorDTO> authorDTOs = fetchAllAuthorsWithCoAuthorsFromOrganization(organizationDTO);
 
-		authorDTOs.parallelStream().forEach((AuthorDTO authorDTO) -> {
-			Collection<Publication> publications = publicationService
-					.fetchAllPublicationsByAuthorBetweenYears(authorDTO, fromYear, toYear);
-
-			authorDTO.setPublications(publications);
-		});
+		authorDTOs.parallelStream()
+			.filter(a -> a != null)
+			.forEach((AuthorDTO authorDTO) -> {
+				Collection<Publication> publications = publicationService
+						.fetchAllPublicationsByAuthorBetweenYears(authorDTO, fromYear, toYear);
+	
+				authorDTO.setPublications(publications);
+			});
 
 		return authorDTOs;
 	}

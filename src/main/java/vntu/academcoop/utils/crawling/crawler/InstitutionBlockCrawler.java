@@ -1,4 +1,4 @@
-package vntu.academcoop.utils.crawl.crawler;
+package vntu.academcoop.utils.crawling.crawler;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

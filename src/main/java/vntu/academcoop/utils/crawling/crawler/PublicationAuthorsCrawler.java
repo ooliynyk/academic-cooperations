@@ -1,4 +1,4 @@
-package vntu.academcoop.utils.crawl.crawler;
+package vntu.academcoop.utils.crawling.crawler;
 
 import java.util.ArrayList;
 import java.util.Collection;
