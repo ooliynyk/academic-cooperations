@@ -1,16 +1,40 @@
 var app = angular.module('academicPublicationsGraphApp', []);
 
-var PROJECT_URL = '/academic-cooperations'
+var PROJECT_URL = '/academic-cooperations';
+
+SearchByEnum = {
+	CO_AUTHORS : 0,
+	PUBLICATIONS : 1
+};
 
 app.controller('PublicationsGraphController',
 		function PublicationsGraphController($scope, $http) {
 			$scope.search = function(university) {
-				$http.get(
-						PROJECT_URL + '/network/by-coauthors?university='
-								+ university).then(function(response) {
-					network = $scope.network(response.data);
-					networkLayer(network);
-				});
+				var searchBy = getSearchBy();
+
+				var url = null;
+				if (searchBy == SearchByEnum.CO_AUTHORS) {
+					url = PROJECT_URL + '/network/by-coauthors?university=' + university;
+				} else if (searchBy == SearchByEnum.PUBLICATIONS) {
+					var fromYear = $scope.fromYear;
+					var toYear = $scope.toYear;
+
+					url = PROJECT_URL + '/network/by-publications?university=' + university;
+					if (fromYear != undefined) {
+						url += '&fromYear=' + fromYear;
+					}
+					if (toYear != undefined) {
+						url += '&toYear=' + toYear;
+					}
+				}
+
+				if (url != null) {
+					$http.get(url).then(function(response) {
+						network = $scope.network(response.data);
+						networkLayer(network);
+					});
+				}
+
 			};
 
 			$scope.network = function(cooperationNetwork) {
@@ -46,3 +70,9 @@ app.controller('PublicationsGraphController',
 			};
 
 		});
+
+function getSearchBy() {
+	var searchByElement = document.getElementById("searchBy");
+
+	return searchByElement.options[searchByElement.selectedIndex].value;
+}

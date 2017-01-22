@@ -3,27 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 
-
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" />
-
-<!-- Optional theme -->
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css" />
-
 <link rel="stylesheet"
 	href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />
 
 <link th:href="@{/css/leaf.css}" rel="stylesheet"></link>
 
 <link th:href="@{/css/searchbox.css}" rel="stylesheet"></link>
-
-<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-
-<!-- Latest compiled and minified JavaScript -->
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
 <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
 
@@ -32,69 +17,64 @@
 <script
 	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
 
+
+<!-- Bootstrap -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+	integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+	crossorigin="anonymous" />
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+	integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+	integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+	crossorigin="anonymous"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+	integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+	crossorigin="anonymous"></script>
+
 </head>
 <body>
 	<div ng-app="academicPublicationsGraphApp"
-		ng-controller="PublicationsGraphController">
+		ng-controller="PublicationsGraphController"
+		style="background-color: #e3f2fd;">
 
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="input-group" id="adv-search">
-						<form ng-submit="search(searchUniversity)">
-							<input ng-model="searchUniversity" type="text"
-								class="form-control" placeholder="Search for university" />
-						</form>
-						<div class="input-group-btn">
-							<div class="btn-group" role="group">
-								<div class="dropdown dropdown-lg">
-									<button type="button" class="btn btn-default dropdown-toggle"
-										data-toggle="dropdown" aria-expanded="false">
-										<span class="caret"></span>
-									</button>
-									<div class="dropdown-menu dropdown-menu-right" role="menu">
-										<form class="form-horizontal" role="form">
-											<div class="form-group">
-												<label for="filter">Search by</label> <select
-													class="form-control">
-													<option value="0" selected="">Citations</option>
-													<option value="1">Publications</option>
-												</select>
-											</div>
-											<div class="form-group hidden" >
-												<label for="contain">From year</label> <input
-													class="form-control" type="text" />
-											</div>
-											<div class="form-group hidden">
-												<label for="contain">To year</label> <input
-													class="form-control" type="text" />
-											</div>
-											<button type="submit" class="btn btn-primary">
-												<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-											</button>
-										</form>
-									</div>
-								</div>
-								<button type="button" class="btn btn-primary">
-									<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-								</button>
-							</div>
-						</div>
-					</div>
+		<form ng-submit="search(searchUniversity)">
+
+			<nav class="navbar navbar-light">
+				<div class="input-group">
+					<select class="select-custom" id="searchBy">
+						<option value="0" selected="" data-toggle="collapse"
+							data-target="#filter">By co-authors</option>
+						<option value="1" data-toggle="collapse" data-target="#filter">By
+							publications</option>
+					</select> <input ng-model="searchUniversity" type="text"
+						class="form-control" placeholder="Search for university" />
 				</div>
+			</nav>
+		</form>
+
+		<div id="filter" class="collapse">
+			<div class="form-inline">
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+					<div class="input-group-addon">From year</div>
+					<input ng-model="fromYear" type="text" class="form-control"
+						id="inlineFormInputGroup" />
+				</div>
+
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+					<div class="input-group-addon">To year</div>
+					<input ng-model="toYear" type="text" class="form-control"
+						id="inlineFormInputGroup" />
+				</div>
+
 			</div>
 		</div>
-
 	</div>
 
 	<div id="map"></div>
-
-	<!-- 		<form ng-submit="search(searchUniversity)">
-			<input ng-model="searchUniversity" type="text" style="width: 550px;"
-				class="form-control" /> <input ng-model="searchUniversity"
-				type="text" name="search_text" id="search_text" placeholder="Search" />
-			<input type="button" name="search_button" id="search_button" />
-		</form> -->
 
 	<script th:src="@{/js/map.js}"></script>
 	<script th:src="@{/js/app.js}"></script>
