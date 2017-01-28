@@ -82,14 +82,4 @@ public class FuzzyNameMatcher {
 		return set;
 	}
 
-	public static void main(String[] args) {
-		AuthorDTO a1 = new AuthorDTO(new Author(null, "Сергей Д Штовба", null, false));
-		AuthorDTO a2 = new AuthorDTO(new Author(null, "Сергей Д Штовба", null, false));
-		AuthorDTO a3 = new AuthorDTO(new Author(null, "СД Штовба", null, false));
-		AuthorDTO a4 = new AuthorDTO(new Author(null, "Ротштейн", null, false));
-
-		FuzzyNameMatcher matcher = new FuzzyNameMatcher(Arrays.asList(a1, a2, a3, a4));
-		System.out.println(matcher.findClosestMatchAuthor("АП Штовба"));
-	}
-
 }

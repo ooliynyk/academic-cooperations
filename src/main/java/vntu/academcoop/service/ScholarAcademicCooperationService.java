@@ -20,7 +20,7 @@ import vntu.academcoop.utils.matching.FuzzyNameMatcher;
 
 @Service
 public class ScholarAcademicCooperationService implements AcademicCooperationService {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ScholarAcademicCooperationService.class);
 
 	private final AuthorService authorService;
@@ -55,7 +55,7 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 	}
 
 	@Override
-	public CooperationNetworkDTO fetchPublicationsCooperationNetworkInYears(String organizationName, Date fromYear,
+	public CooperationNetworkDTO fetchPublicationsCooperationNetwork(String organizationName, Date fromYear,
 			Date toYear) {
 		CooperationNetworkDTO cooperationNetwork = new CooperationNetworkDTO();
 

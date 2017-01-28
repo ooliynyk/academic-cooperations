@@ -51,7 +51,7 @@ public class NetworkSearchController {
 		stopWatch.start();
 
 		CooperationNetworkDTO publicationNetwork = cooperationService
-				.fetchPublicationsCooperationNetworkInYears(university, fromYear, toYear);
+				.fetchPublicationsCooperationNetwork(university, fromYear, toYear);
 
 		stopWatch.stop();
 		logger.info("Searching was finished, elapsed time: {}s", stopWatch.getTotalTimeSeconds());

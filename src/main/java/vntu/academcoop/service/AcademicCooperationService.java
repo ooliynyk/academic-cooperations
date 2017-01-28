@@ -8,6 +8,6 @@ public interface AcademicCooperationService {
 	
 	CooperationNetworkDTO fetchCoAuthorsCooperationNetwork(String organizationName);
 	
-	CooperationNetworkDTO fetchPublicationsCooperationNetworkInYears(String organizationName, Date fromYear, Date toYear);
+	CooperationNetworkDTO fetchPublicationsCooperationNetwork(String organizationName, Date fromYear, Date toYear);
 	
 }
