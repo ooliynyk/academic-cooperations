@@ -14,6 +14,8 @@ markersLayer.addTo(map);
 
 var geocoder = new L.Control.Geocoder.Nominatim();
 
+var geojson = L.geoJson(countries);
+
 var NODE_SIZE_MAX = 30;
 
 var DUMMY_LOCATION = [ 0, 0 ];
@@ -28,7 +30,7 @@ function networkLayer(network) {
 	var processingCounter = 0;
 
 	network.nodes.forEach(function(node) {
-		console.log(node.label);
+		//console.log(node.label);
 
 		geocoder.geocode(node.label, function(results) {
 			processingCounter++;
@@ -51,40 +53,36 @@ function networkLayer(network) {
 			drawNode(node.label, Math.max(nodeSize, 5), latLng);
 			
 			if (processingCounter == network.nodes.length) {
-				drawCountriesLayer(geoNetwork);
+				drawColorfulCountries(geoNetwork);
 			}
 		});
 	});
 }
 
-function drawCountriesLayer(geoNetwork) {
-	console.log(geoNetwork);
+function drawColorfulCountries(geoNetwork) {
+	//console.log(geoNetwork);
+	//console.log(geojson);
 	
-}
+	geojson = L.geoJson(countries, {
+	    filter: function(feature, layer) {
+	    	var country = feature.properties.ADMIN;
+	    	console.log(country);
 
-function drawEdges(edges, locations) {
-	console.log('Draw edges');
-
-	for (var i = 0; i < edges.length; i++) {
-		var edge = edges[i];
-
-		console.log(edge);
-		if (locations[edge.from] == DUMMY_LOCATION
-				|| locations[edge.to] == DUMMY_LOCATION) {
-			console.log('Dummy location');
-			continue;
-		}
-
-		drawEdge(edge, locations[edge.from], locations[edge.to])
-
-		// zoom the map to the polyline
-		// map.fitBounds(polyline.getBounds());
-	}
+	    	for (let geoNode of geoNetwork) {
+	    		if (geoNode.country == country)
+	    			return true;
+	    	}
+	    	return false;
+	    },
+		style: style,
+	    onEachFeature: onEachFeature
+	}).addTo(map);
 }
 
 function drawNode(label, size, location) {
 	var marker = new L.CircleMarker(location, {
 		radius : size,
+		riseOnHover: true
 	});
 	marker.bindTooltip(label, {
 		permanent : false,
@@ -92,16 +90,6 @@ function drawNode(label, size, location) {
 	});
 	// marker.addTo(map);
 	markersLayer.addLayer(marker);
-}
-
-function drawEdge(edge, fromLocation, toLocation) {
-	var polyline = L.polyline([ fromLocation, toLocation ], {
-		color : 'red',
-		opacity : 0.5,
-		fillOpacity : 0.8,
-		weight : edge.value
-	})/* .addTo(map) */;
-	markersLayer.addLayer(polyline);
 }
 
 function calculateNodeSizeCoef(nodes) {
@@ -112,3 +100,58 @@ function calculateNodeSizeCoef(nodes) {
 	}
 	return NODE_SIZE_MAX / nodeValueMax;
 }
+
+function getColor(d) {
+    return d > 1000 ? '#800026' :
+           d > 500  ? '#BD0026' :
+           d > 200  ? '#E31A1C' :
+           d > 100  ? '#FC4E2A' :
+           d > 50   ? '#FD8D3C' :
+           d > 20   ? '#FEB24C' :
+           d > 10   ? '#FED976' :
+                      '#FFEDA0';
+}
+
+function style(feature) {
+	return {
+		weight: 2,
+		opacity: 1,
+		color: 'white',
+		dashArray: '3',
+		fillOpacity: 0.7,
+		fillColor: getColor(feature.properties.density)
+	};
+}
+
+function highlightFeature(e) {
+    var layer = e.target;
+
+    layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.7
+    });
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+    }
+}
+
+function resetHighlight(e) {
+    geojson.resetStyle(e.target);
+}
+
+function zoomToFeature(e) {
+    map.fitBounds(e.target.getBounds());
+}
+
+function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature
+    });
+}
+
+
