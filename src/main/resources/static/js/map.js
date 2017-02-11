@@ -14,50 +14,52 @@ markersLayer.addTo(map);
 
 var geocoder = new L.Control.Geocoder.Nominatim();
 
-// Initialize the SVG layer
-// map._initPathRoot();
-
-// We pick up the SVG from the map object
-
-function addpoint(lat, lon, text, radius) {
-	var circle = L.circleMarker([ lat, lon ], {
-		color : 'red',
-		fillColor : '#f03',
-		fillOpacity : 0.5,
-		radius : 5
-	}).addTo(map);
-
-}
+var NODE_SIZE_MAX = 30;
 
 var DUMMY_LOCATION = [ 0, 0 ];
 
 function networkLayer(network) {
 	markersLayer.clearLayers();
+
+	var nodeSizeCoef = calculateNodeSizeCoef(network.nodes);
+
+	var geoNetwork = new Set();
 	
-	var locations = {};
+	var processingCounter = 0;
+
 	network.nodes.forEach(function(node) {
 		console.log(node.label);
 
 		geocoder.geocode(node.label, function(results) {
-			if (results == null || results.length < 1) {
-				locations[node.id] = DUMMY_LOCATION;
-				console.log('Dummy location for ' + node.label);
+			processingCounter++;
+			
+			if (results == null || results.length == 0)
 				return;
-			}
-
+			
 			var latLng = new L.LatLng(results[0].center.lat,
 					results[0].center.lng);
 
-			locations[node.id] = latLng;
+			var country = results[0].properties.address.country;
 
-			drawNode(node.label, latLng);
+			geoNetwork.add({
+				id : node.id,
+				value : node.value,
+				country : country
+			});
 
-			if (Object.keys(locations).length == network.nodes.length) {
-				drawEdges(network.edges, locations);
+			var nodeSize = node.value * nodeSizeCoef;
+			drawNode(node.label, Math.max(nodeSize, 5), latLng);
+			
+			if (processingCounter == network.nodes.length) {
+				drawCountriesLayer(geoNetwork);
 			}
 		});
 	});
+}
 
+function drawCountriesLayer(geoNetwork) {
+	console.log(geoNetwork);
+	
 }
 
 function drawEdges(edges, locations) {
@@ -80,13 +82,15 @@ function drawEdges(edges, locations) {
 	}
 }
 
-function drawNode(label, location) {
-	var marker = new L.CircleMarker(location);
+function drawNode(label, size, location) {
+	var marker = new L.CircleMarker(location, {
+		radius : size,
+	});
 	marker.bindTooltip(label, {
 		permanent : false,
 		offset : [ 0, 0 ]
 	});
-	//marker.addTo(map);
+	// marker.addTo(map);
 	markersLayer.addLayer(marker);
 }
 
@@ -96,6 +100,15 @@ function drawEdge(edge, fromLocation, toLocation) {
 		opacity : 0.5,
 		fillOpacity : 0.8,
 		weight : edge.value
-	})/*.addTo(map)*/;
+	})/* .addTo(map) */;
 	markersLayer.addLayer(polyline);
+}
+
+function calculateNodeSizeCoef(nodes) {
+	var nodeValueMax = 0;
+	for (var i = 0; i < nodes.length; i++) {
+		if (nodes[i].value > nodeValueMax)
+			nodeValueMax = nodes[i].value;
+	}
+	return NODE_SIZE_MAX / nodeValueMax;
 }

@@ -55,7 +55,7 @@ app.controller('PublicationsGraphController',
 				for ( var id in orgs) {
 					nodes.push({
 						id : id,
-						value : 10,
+						value : orgs[id].cooperationValue,
 						label : orgs[id].name
 					});
 					if (id != rootId) {
