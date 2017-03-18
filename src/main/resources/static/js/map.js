@@ -1,20 +1,14 @@
-var NODE_SIZE_MAX = 30;
+var NODE_SIZE_MAX = 15;
 
 var DUMMY_LOCATION = [ 0, 0 ];
 
 var map = L.map('map').setView([ 51.505, -0.09 ], 3);
 
-L
-		.tileLayer(
-				'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
-				{
-					maxZoom : 18,
-					id : 'mapbox.streets',
-					accessToken : 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw',
-					zIndex : 1
-				}).addTo(map);
+L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+}).addTo(map);
 
-var markersLayer = new L.LayerGroup();
+var markersLayer = new L.LayerGroup({zIndex: 1});
 markersLayer.addTo(map);
 
 var geocoder = new L.Control.Geocoder.Nominatim();
@@ -78,7 +72,7 @@ function style(feature) {
 		opacity : 1,
 		color : 'white',
 		dashArray : '3',
-		fillOpacity : 0.7,
+		fillOpacity : 0.5,
 		fillColor : getColor(feature.properties.density)
 	};
 }
@@ -90,12 +84,8 @@ function highlightFeature(e) {
 		weight : 5,
 		color : '#666',
 		dashArray : '',
-		fillOpacity : 0.7
+		fillOpacity : 0.5
 	});
-
-	if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-		layer.bringToFront();
-	}
 
 	info.update(layer.feature.properties);
 }
@@ -141,7 +131,7 @@ function drawNode(label, size, location) {
 	var marker = new L.CircleMarker(location, {
 		radius : size,
 		riseOnHover : true,
-		fillOpacity : 1
+		fillOpacity : 0.7,
 	});
 	marker.bindTooltip(label, {
 		permanent : false,
@@ -168,6 +158,8 @@ function networkLayer(network) {
 	var geoNetwork = new Map();
 
 	var processingCounter = 0;
+	
+	var lazyCalls = [];
 
 	network.nodes.forEach(function(node) {
 		// console.log(node.label);
@@ -190,10 +182,17 @@ function networkLayer(network) {
 			geoNetwork.set(country, value);
 
 			var nodeSize = node.value * nodeSizeCoef;
-			drawNode(node.label, Math.max(nodeSize, 5), latLng);
+			
+			lazyCalls.push(function() {
+				drawNode(node.label, Math.max(nodeSize, 5), latLng);
+			});
 
 			if (processingCounter == network.nodes.length) {
 				drawColorfulCountries(geoNetwork);
+				
+				lazyCalls.forEach(function(call) {
+					call();
+				});
 			}
 		});
 	});
