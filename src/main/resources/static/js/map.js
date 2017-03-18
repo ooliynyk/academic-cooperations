@@ -11,6 +11,9 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Ma
 var markersLayer = new L.LayerGroup();
 markersLayer.addTo(map);
 
+var geojsonLayer = new L.LayerGroup();
+geojsonLayer.addTo(map);
+
 var geocoder = new L.Control.Geocoder.Nominatim();
 
 // control that shows search box
@@ -124,7 +127,7 @@ function drawColorfulCountries(geoNetwork) {
 		},
 		style : style,
 		onEachFeature : onEachFeature
-	}).addTo(map);
+	}).addTo(geojsonLayer);
 }
 
 function drawNode(label, size, location) {
@@ -152,6 +155,7 @@ function calculateNodeSizeCoef(nodes) {
 
 function networkLayer(network) {
 	markersLayer.clearLayers();
+	geojsonLayer.clearLayers();
 
 	var nodeSizeCoef = calculateNodeSizeCoef(network.nodes);
 
