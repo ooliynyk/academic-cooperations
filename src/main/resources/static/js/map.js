@@ -8,7 +8,7 @@ L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Ma
 	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
 }).addTo(map);
 
-var markersLayer = new L.LayerGroup({zIndex: 1});
+var markersLayer = new L.LayerGroup();
 markersLayer.addTo(map);
 
 var geocoder = new L.Control.Geocoder.Nominatim();
@@ -72,7 +72,7 @@ function style(feature) {
 		opacity : 1,
 		color : 'white',
 		dashArray : '3',
-		fillOpacity : 0.5,
+		fillOpacity : 0.7,
 		fillColor : getColor(feature.properties.density)
 	};
 }
@@ -84,7 +84,7 @@ function highlightFeature(e) {
 		weight : 5,
 		color : '#666',
 		dashArray : '',
-		fillOpacity : 0.5
+		fillOpacity : 0.7
 	});
 
 	info.update(layer.feature.properties);
@@ -131,7 +131,7 @@ function drawNode(label, size, location) {
 	var marker = new L.CircleMarker(location, {
 		radius : size,
 		riseOnHover : true,
-		fillOpacity : 0.7,
+		fillOpacity : 0.85,
 	});
 	marker.bindTooltip(label, {
 		permanent : false,
