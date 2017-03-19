@@ -50,6 +50,9 @@ app.controller('PublicationsGraphController',
 				console.log(rootId);
 
 				var orgs = cooperationNetwork.organizations;
+				
+				// we don't interested of root organization real cooperation value
+				orgs[rootId].cooperationValue = 1;
 
 				var edgeValueCoef = calculateEdgeValueCoef(cooperationNetwork);
 				for ( var id in orgs) {
