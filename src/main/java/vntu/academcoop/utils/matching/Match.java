@@ -3,11 +3,11 @@ package vntu.academcoop.utils.matching;
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Doubles;
 
-import vntu.academcoop.dto.AuthorDTO;
+import vntu.academcoop.dto.AuthorDetails;
 
 public class Match {
 
-	private final AuthorDTO candidate;
+	private final AuthorDetails candidate;
 	private final double score; // 0 - definitely not, 1.0 - perfect match
 
 	public static final Ordering<Match> SCORE_ORDER = new Ordering<Match>() {
@@ -17,12 +17,12 @@ public class Match {
 		}
 	};
 
-	public Match(AuthorDTO candidate, double score) {
+	public Match(AuthorDetails candidate, double score) {
 		this.candidate = candidate;
 		this.score = score;
 	}
 
-	public AuthorDTO getCandidate() {
+	public AuthorDetails getCandidate() {
 		return candidate;
 	}
 

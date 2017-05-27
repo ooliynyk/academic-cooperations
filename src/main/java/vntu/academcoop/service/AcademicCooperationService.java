@@ -2,12 +2,12 @@ package vntu.academcoop.service;
 
 import java.util.Date;
 
-import vntu.academcoop.dto.CooperationNetworkDTO;
+import vntu.academcoop.dto.CooperationNetwork;
 
 public interface AcademicCooperationService {
 	
-	CooperationNetworkDTO fetchCoAuthorsCooperationNetwork(String organizationName);
+	CooperationNetwork fetchCoAuthorsCooperationNetwork(String organizationName);
 	
-	CooperationNetworkDTO fetchPublicationsCooperationNetwork(String organizationName, Date fromYear, Date toYear);
+	CooperationNetwork fetchPublicationsCooperationNetwork(String organizationName, Date fromYear, Date toYear);
 	
 }

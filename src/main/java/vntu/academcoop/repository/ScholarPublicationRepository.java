@@ -1,4 +1,4 @@
-package vntu.academcoop.dao;
+package vntu.academcoop.repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,14 +24,14 @@ import vntu.academcoop.utils.crawling.crawler.PublicationAuthorsCrawler;
 import vntu.academcoop.utils.crawling.doc.PersonalPageDocument;
 
 @Repository
-public class ScholarPublicationDao implements PublicationDao {
+public class ScholarPublicationRepository implements PublicationRepository {
 
-	private static final Logger logger = LoggerFactory.getLogger(ScholarPublicationDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(ScholarPublicationRepository.class);
 
 	private final DocumentProvider docProvider;
 
 	@Autowired
-	public ScholarPublicationDao(DocumentProvider docProvider) {
+	public ScholarPublicationRepository(DocumentProvider docProvider) {
 		this.docProvider = docProvider;
 	}
 
@@ -107,7 +107,7 @@ public class ScholarPublicationDao implements PublicationDao {
 	}
 
 	public static void main(String[] args) {
-		PublicationDao dao = new ScholarPublicationDao(new ScholarDocumentProvider(new ProxiedDocumentParser()));
+		PublicationRepository dao = new ScholarPublicationRepository(new ScholarDocumentProvider(new ProxiedDocumentParser()));
 		Collection<Publication> publications = dao.findAllPublicationsByAuthorId("4POyYXgAAAAJ");
 		System.out.println(publications);
 		System.out.println(publications.size());

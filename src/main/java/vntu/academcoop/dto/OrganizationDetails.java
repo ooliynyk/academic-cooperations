@@ -2,19 +2,19 @@ package vntu.academcoop.dto;
 
 import vntu.academcoop.model.Organization;
 
-public class OrganizationDTO {
+public class OrganizationDetails {
 
 	private String id;
 	private String name;
 
 	private Integer cooperationValue = 0;
 
-	public OrganizationDTO(Organization organization) {
+	public OrganizationDetails(Organization organization) {
 		this.id = organization.getId();
 		this.name = organization.getName();
 	}
 
-	public OrganizationDTO() {
+	public OrganizationDetails() {
 	}
 
 	public String getId() {

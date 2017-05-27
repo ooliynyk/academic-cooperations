@@ -1,11 +1,11 @@
 package vntu.academcoop.service;
 
-import vntu.academcoop.dto.OrganizationDTO;
+import vntu.academcoop.dto.OrganizationDetails;
 
 public interface OrganizationService {
 
-	OrganizationDTO fetchOrganizationByName(String organizationName);
+	OrganizationDetails fetchOrganizationByName(String organizationName);
 
-	OrganizationDTO fetchOrganizationById(String organizationId);
+	OrganizationDetails fetchOrganizationById(String organizationId);
 
 }

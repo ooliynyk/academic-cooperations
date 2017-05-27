@@ -1,10 +1,10 @@
-package vntu.academcoop.dao;
+package vntu.academcoop.repository;
 
 import java.util.Collection;
 
 import vntu.academcoop.model.Publication;
 
-public interface PublicationDao {
+public interface PublicationRepository {
 
 	Collection<Publication> findAllPublicationsByAuthorId(String authorId);
 

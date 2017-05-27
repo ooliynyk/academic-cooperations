@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import vntu.academcoop.dto.CooperationNetworkDTO;
+import vntu.academcoop.dto.CooperationNetwork;
 import vntu.academcoop.service.AcademicCooperationService;
 
 @RestController
@@ -25,14 +25,14 @@ public class NetworkSearchController {
 	private AcademicCooperationService cooperationService;
 
 	@GetMapping("/by-coauthors")
-	public CooperationNetworkDTO searchByCoAtuhors(@RequestParam String university)
+	public CooperationNetwork searchByCoAtuhors(@RequestParam String university)
 			throws InterruptedException, ExecutionException {
 		logger.info("Searching cooperation by co-authors for organization '{}'", university);
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
-		CooperationNetworkDTO publicationNetwork = cooperationService.fetchCoAuthorsCooperationNetwork(university);
+		CooperationNetwork publicationNetwork = cooperationService.fetchCoAuthorsCooperationNetwork(university);
 
 		stopWatch.stop();
 		logger.info("Searching was finished, elapsed time: {}s", stopWatch.getTotalTimeSeconds());
@@ -41,7 +41,7 @@ public class NetworkSearchController {
 	}
 
 	@GetMapping("/by-publications")
-	public CooperationNetworkDTO searchByPublications(@RequestParam String university,
+	public CooperationNetwork searchByPublications(@RequestParam String university,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy") Date fromYear,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy") Date toYear)
 			throws InterruptedException, ExecutionException {
@@ -50,7 +50,7 @@ public class NetworkSearchController {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
-		CooperationNetworkDTO publicationNetwork = cooperationService
+		CooperationNetwork publicationNetwork = cooperationService
 				.fetchPublicationsCooperationNetwork(university, fromYear, toYear);
 
 		stopWatch.stop();

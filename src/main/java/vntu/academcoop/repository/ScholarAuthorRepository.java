@@ -1,4 +1,4 @@
-package vntu.academcoop.dao;
+package vntu.academcoop.repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,14 +22,14 @@ import vntu.academcoop.utils.crawling.doc.OrganizationPageDocument;
 import vntu.academcoop.utils.crawling.doc.PersonalPageDocument;
 
 @Repository
-public class ScholarAuthorDao implements AuthorDao {
+public class ScholarAuthorRepository implements AuthorRepository {
 
-	private static Logger logger = LoggerFactory.getLogger(ScholarAuthorDao.class);
+	private static Logger logger = LoggerFactory.getLogger(ScholarAuthorRepository.class);
 
 	private final DocumentProvider docProvider;
 
 	@Autowired
-	public ScholarAuthorDao(DocumentProvider docProvider) {
+	public ScholarAuthorRepository(DocumentProvider docProvider) {
 		this.docProvider = docProvider;
 	}
 

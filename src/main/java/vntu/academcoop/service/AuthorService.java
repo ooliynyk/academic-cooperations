@@ -3,16 +3,16 @@ package vntu.academcoop.service;
 import java.util.Collection;
 import java.util.Date;
 
-import vntu.academcoop.dto.AuthorDTO;
-import vntu.academcoop.dto.OrganizationDTO;
+import vntu.academcoop.dto.AuthorDetails;
+import vntu.academcoop.dto.OrganizationDetails;
 
 public interface AuthorService {
 
-	Collection<AuthorDTO> fetchAllAuthorsWithCoAuthorsFromOrganization(OrganizationDTO organizationDTO);
+	Collection<AuthorDetails> fetchAllAuthorsWithCoAuthorsFromOrganization(OrganizationDetails organizationDetails);
 
-	Collection<AuthorDTO> fetchAllAuthorsWithCoAuthorsAndPublicationsBetweenYears(OrganizationDTO organizationDTO,
+	Collection<AuthorDetails> fetchAllAuthorsWithCoAuthorsAndPublicationsBetweenYears(OrganizationDetails organizationDetails,
 			Date fromYear, Date toYear);
 
-	Collection<AuthorDTO> fetchAuthorsByIdentifiers(Collection<String> authorsIdentifiers);
+	Collection<AuthorDetails> fetchAuthorsByIdentifiers(Collection<String> authorsIdentifiers);
 
 }

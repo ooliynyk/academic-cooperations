@@ -7,29 +7,29 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import vntu.academcoop.dao.PublicationDao;
-import vntu.academcoop.dto.AuthorDTO;
+import vntu.academcoop.dto.AuthorDetails;
 import vntu.academcoop.model.Publication;
+import vntu.academcoop.repository.PublicationRepository;
 
 @Service
 public class ScholarPublicationService implements PublicationService {
 
-	private final PublicationDao publicationDao;
+	private final PublicationRepository publicationRepository;
 
 	@Autowired
-	public ScholarPublicationService(PublicationDao publicationDao) {
-		this.publicationDao = publicationDao;
+	public ScholarPublicationService(PublicationRepository publicationRepository) {
+		this.publicationRepository = publicationRepository;
 	}
 
 	@Override
-	public Collection<Publication> fetchAllPublicationsByAuthor(AuthorDTO author) {
-		return publicationDao.findAllPublicationsByAuthorId(author.getId());
+	public Collection<Publication> fetchAllPublicationsByAuthor(AuthorDetails author) {
+		return publicationRepository.findAllPublicationsByAuthorId(author.getId());
 	}
 
 	@Override
-	public Collection<Publication> fetchAllPublicationsByAuthorBetweenYears(AuthorDTO author, Date fromYear,
+	public Collection<Publication> fetchAllPublicationsByAuthorBetweenYears(AuthorDetails author, Date fromYear,
 			Date toYear) {
-		Collection<Publication> publications = publicationDao.findAllPublicationsByAuthorId(author.getId());
+		Collection<Publication> publications = publicationRepository.findAllPublicationsByAuthorId(author.getId());
 
 		if (fromYear != null || toYear != null) {
 			publications = publications.stream().filter(p -> p.getPublicationDate() != null)

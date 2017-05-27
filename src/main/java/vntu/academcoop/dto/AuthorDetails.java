@@ -7,7 +7,7 @@ import java.util.Set;
 import vntu.academcoop.model.Author;
 import vntu.academcoop.model.Publication;
 
-public class AuthorDTO {
+public class AuthorDetails {
 	
 	private String id;
 	private String name;
@@ -16,7 +16,7 @@ public class AuthorDTO {
 	private Set<Author> coAuthors = new LinkedHashSet<>();
 	private Set<Publication> publications = new LinkedHashSet<>();
 
-	public AuthorDTO(Author author) {
+	public AuthorDetails(Author author) {
 		this.id = author.getId();
 		this.name = author.getName();
 		this.organizationId = author.getOrganizationId();

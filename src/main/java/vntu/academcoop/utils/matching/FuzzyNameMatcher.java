@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 
-import vntu.academcoop.dto.AuthorDTO;
+import vntu.academcoop.dto.AuthorDetails;
 import vntu.academcoop.model.Author;
 
 public class FuzzyNameMatcher {
@@ -21,13 +21,13 @@ public class FuzzyNameMatcher {
 
 	public static final double MIN_SCORE = 0.62;
 
-	private final Collection<AuthorDTO> authors;
+	private final Collection<AuthorDetails> authors;
 
-	public FuzzyNameMatcher(Collection<AuthorDTO> authors) {
+	public FuzzyNameMatcher(Collection<AuthorDetails> authors) {
 		this.authors = authors;
 	}
 
-	public AuthorDTO findClosestMatchAuthor(String searchName) {
+	public AuthorDetails findClosestMatchAuthor(String searchName) {
 		Match match = findClosestMatch(searchName);
 		return match != null ? match.getCandidate() : null;
 	}
@@ -42,7 +42,7 @@ public class FuzzyNameMatcher {
 	private List<Match> findMatches(String searchName) {
 		List<Match> results = new ArrayList<Match>();
 
-		for (AuthorDTO author : authors) {
+		for (AuthorDetails author : authors) {
 			double score = scoreName(searchName, author.getName());
 
 			if (score > MIN_SCORE) {

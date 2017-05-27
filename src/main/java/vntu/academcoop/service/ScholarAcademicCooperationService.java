@@ -11,10 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import vntu.academcoop.dto.AuthorDTO;
-import vntu.academcoop.dto.CooperationNetworkDTO;
-import vntu.academcoop.dto.OrganizationDTO;
-import vntu.academcoop.dto.PublicationDTO;
+import vntu.academcoop.dto.AuthorDetails;
+import vntu.academcoop.dto.CooperationNetwork;
+import vntu.academcoop.dto.OrganizationDetails;
+import vntu.academcoop.dto.PublicationDetails;
 import vntu.academcoop.model.Publication;
 import vntu.academcoop.utils.matching.FuzzyNameMatcher;
 
@@ -33,19 +33,19 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 	}
 
 	@Override
-	public CooperationNetworkDTO fetchCoAuthorsCooperationNetwork(String organizationName) {
-		CooperationNetworkDTO cooperationNetwork = new CooperationNetworkDTO();
+	public CooperationNetwork fetchCoAuthorsCooperationNetwork(String organizationName) {
+		CooperationNetwork cooperationNetwork = new CooperationNetwork();
 
-		OrganizationDTO organization = organizationService.fetchOrganizationByName(organizationName);
-		Collection<AuthorDTO> authors = authorService.fetchAllAuthorsWithCoAuthorsFromOrganization(organization);
+		OrganizationDetails organization = organizationService.fetchOrganizationByName(organizationName);
+		Collection<AuthorDetails> authors = authorService.fetchAllAuthorsWithCoAuthorsFromOrganization(organization);
 
 		cooperationNetwork.setRootOrganization(organization);
 
-		Collection<AuthorDTO> flatCoAuthors = mapAuthorsToFlatCoAuthorsSet(authors);
+		Collection<AuthorDetails> flatCoAuthors = mapAuthorsToFlatCoAuthorsSet(authors);
 
-		Set<OrganizationDTO> coorgs = mapAuthorsToOrganizationsSet(flatCoAuthors);
-		for (OrganizationDTO coorg : coorgs) {
-			Collection<AuthorDTO> coorgAuthors = filterAuthorsFromOrganization(coorg.getId(), flatCoAuthors);
+		Set<OrganizationDetails> coorgs = mapAuthorsToOrganizationsSet(flatCoAuthors);
+		for (OrganizationDetails coorg : coorgs) {
+			Collection<AuthorDetails> coorgAuthors = filterAuthorsFromOrganization(coorg.getId(), flatCoAuthors);
 			coorg.setCooperationValue(coorgAuthors.size());
 
 			cooperationNetwork.addOrganization(coorg);
@@ -55,21 +55,21 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 	}
 
 	@Override
-	public CooperationNetworkDTO fetchPublicationsCooperationNetwork(String organizationName, Date fromYear,
+	public CooperationNetwork fetchPublicationsCooperationNetwork(String organizationName, Date fromYear,
 			Date toYear) {
-		CooperationNetworkDTO cooperationNetwork = new CooperationNetworkDTO();
+		CooperationNetwork cooperationNetwork = new CooperationNetwork();
 
-		OrganizationDTO organization = organizationService.fetchOrganizationByName(organizationName);
-		Collection<AuthorDTO> authors = authorService
+		OrganizationDetails organization = organizationService.fetchOrganizationByName(organizationName);
+		Collection<AuthorDetails> authors = authorService
 				.fetchAllAuthorsWithCoAuthorsAndPublicationsBetweenYears(organization, fromYear, toYear);
 
 		cooperationNetwork.setRootOrganization(organization);
 
-		Collection<PublicationDTO> allPublications = mapAuthorsToFlatPublications(authors);
+		Collection<PublicationDetails> allPublications = mapAuthorsToFlatPublications(authors);
 
-		Set<OrganizationDTO> coorgs = mapPublicationsToOrganizationsSet(allPublications);
-		for (OrganizationDTO coorg : coorgs) {
-			Collection<PublicationDTO> publicationsFromOrg = filterPublicationsFromOrganization(coorg.getId(),
+		Set<OrganizationDetails> coorgs = mapPublicationsToOrganizationsSet(allPublications);
+		for (OrganizationDetails coorg : coorgs) {
+			Collection<PublicationDetails> publicationsFromOrg = filterPublicationsFromOrganization(coorg.getId(),
 					allPublications);
 			coorg.setCooperationValue(publicationsFromOrg.size());
 
@@ -79,17 +79,17 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 		return cooperationNetwork;
 	}
 
-	private static Collection<AuthorDTO> filterAuthorsFromOrganization(String organizationId,
-			Collection<AuthorDTO> authors) {
+	private static Collection<AuthorDetails> filterAuthorsFromOrganization(String organizationId,
+			Collection<AuthorDetails> authors) {
 		return authors.stream().filter(a -> a.getOrganizationId().equals(organizationId)).collect(Collectors.toList());
 	}
 
-	private static Collection<PublicationDTO> filterPublicationsFromOrganization(String targetOrganizationId,
-			Collection<PublicationDTO> publications) {
-		Collection<PublicationDTO> publicationsFromOrg = new ArrayList<>();
+	private static Collection<PublicationDetails> filterPublicationsFromOrganization(String targetOrganizationId,
+			Collection<PublicationDetails> publications) {
+		Collection<PublicationDetails> publicationsFromOrg = new ArrayList<>();
 
-		for (PublicationDTO publication : publications) {
-			for (AuthorDTO author : publication.getAuthors()) {
+		for (PublicationDetails publication : publications) {
+			for (AuthorDetails author : publication.getAuthors()) {
 				if (author.getOrganizationId().equals(targetOrganizationId)) {
 					publicationsFromOrg.add(publication);
 					break;
@@ -100,10 +100,10 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 		return publicationsFromOrg;
 	}
 
-	private static Collection<AuthorDTO> findPublicationAuthors(Publication publication, FuzzyNameMatcher nameMatcher) {
-		Collection<AuthorDTO> publicationAuthors = new ArrayList<>();
+	private static Collection<AuthorDetails> findPublicationAuthors(Publication publication, FuzzyNameMatcher nameMatcher) {
+		Collection<AuthorDetails> publicationAuthors = new ArrayList<>();
 		for (String authorName : publication.getAuthorsNames()) {
-			AuthorDTO author = nameMatcher.findClosestMatchAuthor(authorName);
+			AuthorDetails author = nameMatcher.findClosestMatchAuthor(authorName);
 
 			if (author != null)
 				publicationAuthors.add(author);
@@ -112,13 +112,13 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 		return publicationAuthors;
 	}
 
-	private Collection<PublicationDTO> mapAuthorsToFlatPublications(Collection<AuthorDTO> authors) {
-		Collection<AuthorDTO> authorsAndCoauthors = new ArrayList<AuthorDTO>(authors);
+	private Collection<PublicationDetails> mapAuthorsToFlatPublications(Collection<AuthorDetails> authors) {
+		Collection<AuthorDetails> authorsAndCoauthors = new ArrayList<AuthorDetails>(authors);
 		authorsAndCoauthors.addAll(mapAuthorsToFlatCoAuthorsSet(authors));
 
 		FuzzyNameMatcher nameMatcher = new FuzzyNameMatcher(authorsAndCoauthors);
-		Collection<PublicationDTO> flatPublications = new ArrayList<>();
-		for (AuthorDTO author : authors) {
+		Collection<PublicationDetails> flatPublications = new ArrayList<>();
+		for (AuthorDetails author : authors) {
 			Collection<Publication> publications = author.getPublications();
 
 			for (Publication publication : publications) {
@@ -128,25 +128,25 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 
 				logger.debug("Publication: {}", publication);
 
-				PublicationDTO publicationDTO = new PublicationDTO();
-				publicationDTO.setTitle(publication.getTitle());
-				publicationDTO.setPublicationId(publication.getId());
-				publicationDTO.setAuthors(findPublicationAuthors(publication, nameMatcher));
-				publicationDTO.setPublicationDate(publication.getPublicationDate());
+				PublicationDetails publicationDetails = new PublicationDetails();
+				publicationDetails.setTitle(publication.getTitle());
+				publicationDetails.setPublicationId(publication.getId());
+				publicationDetails.setAuthors(findPublicationAuthors(publication, nameMatcher));
+				publicationDetails.setPublicationDate(publication.getPublicationDate());
 
-				logger.debug("Publication authors: {}", publicationDTO.getAuthors());
+				logger.debug("Publication authors: {}", publicationDetails.getAuthors());
 
-				flatPublications.add(publicationDTO);
+				flatPublications.add(publicationDetails);
 			}
 		}
 
 		return flatPublications;
 	}
 
-	private static Collection<AuthorDTO> mapAuthorsToFlatCoAuthorsSet(Collection<AuthorDTO> authors) {
-		Collection<AuthorDTO> flatCoAuthors = new ArrayList<>();
-		for (AuthorDTO author : authors) {
-			Collection<AuthorDTO> coAuthors = author.getCoAuthors().stream().distinct().map(a -> new AuthorDTO(a))
+	private static Collection<AuthorDetails> mapAuthorsToFlatCoAuthorsSet(Collection<AuthorDetails> authors) {
+		Collection<AuthorDetails> flatCoAuthors = new ArrayList<>();
+		for (AuthorDetails author : authors) {
+			Collection<AuthorDetails> coAuthors = author.getCoAuthors().stream().distinct().map(a -> new AuthorDetails(a))
 					.collect(Collectors.toSet());
 
 			flatCoAuthors.addAll(coAuthors);
@@ -154,7 +154,7 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 		return flatCoAuthors;
 	}
 
-	private Set<OrganizationDTO> mapAuthorsToOrganizationsSet(Collection<AuthorDTO> authors) {
+	private Set<OrganizationDetails> mapAuthorsToOrganizationsSet(Collection<AuthorDetails> authors) {
 		Set<String> orgIdentifiers = authors.stream().map(a -> a.getOrganizationId()).distinct()
 				.collect(Collectors.toSet());
 
@@ -162,8 +162,8 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 				.filter(org -> org != null).collect(Collectors.toSet());
 	}
 
-	private Set<OrganizationDTO> mapPublicationsToOrganizationsSet(Collection<PublicationDTO> publications) {
-		Set<AuthorDTO> authors = publications.parallelStream().map(PublicationDTO::getAuthors)
+	private Set<OrganizationDetails> mapPublicationsToOrganizationsSet(Collection<PublicationDetails> publications) {
+		Set<AuthorDetails> authors = publications.parallelStream().map(PublicationDetails::getAuthors)
 				.flatMap(Collection::stream).distinct().collect(Collectors.toSet());
 
 		return mapAuthorsToOrganizationsSet(authors);

@@ -1,8 +1,8 @@
-package vntu.academcoop.dao;
+package vntu.academcoop.repository;
 
 import vntu.academcoop.model.Organization;
 
-public interface OrganizationDao {
+public interface OrganizationRepository {
 
 	Organization findOrganizationByName(String organizationName);
 

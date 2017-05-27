@@ -1,4 +1,4 @@
-package vntu.academcoop.dao;
+package vntu.academcoop.repository;
 
 import java.net.URLEncoder;
 
@@ -17,14 +17,14 @@ import vntu.academcoop.utils.crawling.crawler.OrganizationPageDocumentCrawler;
 import vntu.academcoop.utils.crawling.doc.OrganizationPageDocument;
 
 @Repository
-public class ScholarOrganizationDao implements OrganizationDao {
+public class ScholarOrganizationRepository implements OrganizationRepository {
 
-	private static final Logger logger = LoggerFactory.getLogger(ScholarOrganizationDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(ScholarOrganizationRepository.class);
 
 	private final DocumentProvider docProvider;
 
 	@Autowired
-	public ScholarOrganizationDao(DocumentProvider docProvider) {
+	public ScholarOrganizationRepository(DocumentProvider docProvider) {
 		this.docProvider = docProvider;
 	}
 

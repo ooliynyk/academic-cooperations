@@ -3,22 +3,22 @@ package vntu.academcoop.dto;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class CooperationNetworkDTO {
-	private Map<String, OrganizationDTO> organizations = new LinkedHashMap<>();
+public class CooperationNetwork {
+	private Map<String, OrganizationDetails> organizations = new LinkedHashMap<>();
 	private String rootOrganizationId;
 
-	public void setRootOrganization(OrganizationDTO organization) {
+	public void setRootOrganization(OrganizationDetails organization) {
 		addOrganization(organization);
 		rootOrganizationId = organization.getId();
 	}
 
-	public void addOrganization(OrganizationDTO organization) {
+	public void addOrganization(OrganizationDetails organization) {
 		final String orgId = organization.getId();
 
 		if (!organizations.containsKey(orgId)) {
 			organizations.put(orgId, organization);
 		} else {
-			OrganizationDTO storedOrganization = organizations.get(orgId);
+			OrganizationDetails storedOrganization = organizations.get(orgId);
 			Integer totalCooperationValue = storedOrganization.getCooperationValue()
 					+ organization.getCooperationValue();
 
@@ -27,11 +27,11 @@ public class CooperationNetworkDTO {
 
 	}
 
-	public Map<String, OrganizationDTO> getOrganizations() {
+	public Map<String, OrganizationDetails> getOrganizations() {
 		return organizations;
 	}
 
-	public void setOrganizations(Map<String, OrganizationDTO> organizations) {
+	public void setOrganizations(Map<String, OrganizationDetails> organizations) {
 		this.organizations = organizations;
 	}
 

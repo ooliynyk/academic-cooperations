@@ -3,11 +3,11 @@ package vntu.academcoop.dto;
 import java.util.Collection;
 import java.util.Date;
 
-public class PublicationDTO {
+public class PublicationDetails {
 	
 	private String publicationId;
 	private String title;
-	private Collection<AuthorDTO> authors;
+	private Collection<AuthorDetails> authors;
 	private Date publicationDate;
 
 	public String getPublicationId() {
@@ -26,11 +26,11 @@ public class PublicationDTO {
 		this.title = title;
 	}
 
-	public Collection<AuthorDTO> getAuthors() {
+	public Collection<AuthorDetails> getAuthors() {
 		return authors;
 	}
 
-	public void setAuthors(Collection<AuthorDTO> authors) {
+	public void setAuthors(Collection<AuthorDetails> authors) {
 		this.authors = authors;
 	}
 
