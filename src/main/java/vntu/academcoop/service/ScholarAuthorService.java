@@ -3,6 +3,7 @@ package vntu.academcoop.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -72,25 +73,25 @@ public class ScholarAuthorService implements AuthorService {
 	}
 	
 	private Collection<AuthorDetails> findCoAuthorsAndMapToDTOs(Collection<Author> authors) {
-		Collection<AuthorDetails> authorDetails = new ArrayList<>();
+		Collection<AuthorDetails> authorsDetails = new ArrayList<>();
 		authors.parallelStream()
 			.forEach((Author author) -> {
 				AuthorDetails authorDetails = new AuthorDetails(author);
 
-				if (author.hasCoAuthors()) {
+				if (author.isHasCoAuthors()) {
 					Collection<String> coAuthorsIdentifiers = authorRepository.findCoAuthorsIdentifiersByAuthorId(author.getId());
-					Collection<Author> coAuthors = coAuthorsIdentifiers.parallelStream()
+					Set<Author> coAuthors = coAuthorsIdentifiers.parallelStream()
 							.filter(coAuthorId -> hasCommunication(author.getId(), coAuthorId))
 							.map(coAuthorId -> authorRepository.findAuthorById(coAuthorId))
 							.filter(coAuthor -> coAuthor != null)
-							.collect(Collectors.toList());
+							.collect(Collectors.toSet());
 					authorDetails.setCoAuthors(coAuthors);
 				}
 
-				authorDetails.add(authorDetails);
+				authorsDetails.add(authorDetails);
 			});
 		
-		return authorDetails;
+		return authorsDetails;
 	}
 
 	private boolean hasCommunication(String authorId, String coAuthorId) {

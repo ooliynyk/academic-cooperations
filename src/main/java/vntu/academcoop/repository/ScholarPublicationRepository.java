@@ -63,7 +63,7 @@ public class ScholarPublicationRepository implements PublicationRepository {
 					publications.add(new Publication(id, title, authorsNames, publicationDate));
 				}
 
-				if (!personalPageDoc.hasMorePublications()) {
+				if (!personalPageDoc.isHasMorePublications()) {
 					break;
 				}
 

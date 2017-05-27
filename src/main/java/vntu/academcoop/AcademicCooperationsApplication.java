@@ -9,7 +9,7 @@ import org.springframework.cache.annotation.EnableCaching;
 public class AcademicCooperationsApplication {
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(AcademicCooperationsApplication.class)
+		new SpringApplicationBuilder(ApplicationTest.class)
 			.profiles("dev")
 			.run(args);
 	}

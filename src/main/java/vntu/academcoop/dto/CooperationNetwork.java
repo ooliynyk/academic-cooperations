@@ -3,7 +3,11 @@ package vntu.academcoop.dto;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import lombok.Data;
+
+@Data
 public class CooperationNetwork {
+
 	private Map<String, OrganizationDetails> organizations = new LinkedHashMap<>();
 	private String rootOrganizationId;
 
@@ -25,18 +29,6 @@ public class CooperationNetwork {
 			storedOrganization.setCooperationValue(totalCooperationValue);
 		}
 
-	}
-
-	public Map<String, OrganizationDetails> getOrganizations() {
-		return organizations;
-	}
-
-	public void setOrganizations(Map<String, OrganizationDetails> organizations) {
-		this.organizations = organizations;
-	}
-
-	public String getRootOrganizationId() {
-		return rootOrganizationId;
 	}
 
 }
