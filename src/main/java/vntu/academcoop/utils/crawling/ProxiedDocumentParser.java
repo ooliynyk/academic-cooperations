@@ -11,11 +11,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.ImmutableList;
-
-import vntu.academcoop.helper.NetworkHelper;
 
 /**
  * Document parser that proxying requests if this needed.
@@ -25,6 +24,12 @@ import vntu.academcoop.helper.NetworkHelper;
 @Service
 public class ProxiedDocumentParser implements DocumentParser {
 	private static final Logger logger = LoggerFactory.getLogger(ProxiedDocumentParser.class);
+	
+	@Value("${proxy.server.host}")
+	private String proxyServerHost;
+	
+	@Value("${proxy.server.port}")
+	private int proxyServerPort;
 
 	private static final List<String> userAgents = ImmutableList.<String>builder()
 			.add("Mozilla/5.0 (Macintosh; Intel Mac OS X; rv:10.0) Gecko/2010101 Firefox/10.0")
@@ -52,7 +57,7 @@ public class ProxiedDocumentParser implements DocumentParser {
 		for (int attempt = 1; attempt <= 2; attempt++) {
 			try {
 				Proxy proxy = proxied.get() ? new Proxy(Proxy.Type.HTTP,
-						new InetSocketAddress(NetworkHelper.getLocalHostLANAddress(), 8118)) : null;
+						new InetSocketAddress(proxyServerHost, proxyServerPort)) : null;
 
 				doc = Jsoup.connect(url).userAgent(getUserAgent()).timeout(3000 * attempt).proxy(proxy).get();
 				break;
