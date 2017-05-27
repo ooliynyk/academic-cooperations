@@ -1,17 +1,15 @@
 package vntu.academcoop;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
 @EnableCaching
-public class AcademicCooperationsApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(ApplicationTest.class)
-			.profiles("dev")
-			.run(args);
+		SpringApplication.run(Application.class, args);
 	}
 
 }

@@ -11,7 +11,6 @@ public class ApplicationTest {
 
 	@Test
 	public void contextLoads() throws Exception {
-
 	}
 
 }
