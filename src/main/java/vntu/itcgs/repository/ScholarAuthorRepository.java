@@ -67,7 +67,7 @@ public class ScholarAuthorRepository implements AuthorRepository {
 	}
 
 	@Override
-	@Cacheable(value = "author-by-id")
+	@Cacheable(value = "author-by-id", unless = "#result == null")
 	public Author findAuthorById(final String authorId) {
 		logger.info("Finding author by id '{}'", authorId);
 

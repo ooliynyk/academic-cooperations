@@ -55,8 +55,7 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 	}
 
 	@Override
-	public CooperationNetwork fetchPublicationsCooperationNetwork(String organizationName, Date fromYear,
-			Date toYear) {
+	public CooperationNetwork fetchPublicationsCooperationNetwork(String organizationName, Date fromYear, Date toYear) {
 		CooperationNetwork cooperationNetwork = new CooperationNetwork();
 
 		OrganizationDetails organization = organizationService.fetchOrganizationByName(organizationName);
@@ -100,7 +99,8 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 		return publicationsFromOrg;
 	}
 
-	private static Collection<AuthorDetails> findPublicationAuthors(Publication publication, FuzzyNameMatcher nameMatcher) {
+	private static Collection<AuthorDetails> findPublicationAuthors(Publication publication,
+			FuzzyNameMatcher nameMatcher) {
 		Collection<AuthorDetails> publicationAuthors = new ArrayList<>();
 		for (String authorName : publication.getAuthorsNames()) {
 			AuthorDetails author = nameMatcher.findClosestMatchAuthor(authorName);
@@ -146,10 +146,12 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 	private static Collection<AuthorDetails> mapAuthorsToFlatCoAuthorsSet(Collection<AuthorDetails> authors) {
 		Collection<AuthorDetails> flatCoAuthors = new ArrayList<>();
 		for (AuthorDetails author : authors) {
-			Collection<AuthorDetails> coAuthors = author.getCoAuthors().stream().distinct().map(a -> new AuthorDetails(a))
-					.collect(Collectors.toSet());
+			if (author.getCoAuthors() != null) {
+				Collection<AuthorDetails> coAuthors = author.getCoAuthors().stream().distinct()
+						.map(a -> new AuthorDetails(a)).collect(Collectors.toSet());
 
-			flatCoAuthors.addAll(coAuthors);
+				flatCoAuthors.addAll(coAuthors);
+			}
 		}
 		return flatCoAuthors;
 	}
