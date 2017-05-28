@@ -1,4 +1,4 @@
-package vntu.itcgs.controller.api;
+package vntu.itcgs.controller;
 
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
