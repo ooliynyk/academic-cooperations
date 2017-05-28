@@ -39,6 +39,7 @@ app.controller('PublicationsGraphController',
 					},
 					function(response) {
 						var error = response.data
+						if (error.message != null)
 						alert("Error: " + error.message);
 					});
 				}
