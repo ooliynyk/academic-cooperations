@@ -1,6 +1,6 @@
 var app = angular.module('academicPublicationsGraphApp', []);
 
-var PROJECT_URL = '/academic-cooperations';
+var PROJECT_URL = '/itcgs';
 
 SearchByEnum = {
 	CO_AUTHORS : 0,
