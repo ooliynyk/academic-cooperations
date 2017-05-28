@@ -10,9 +10,8 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-@Configuration
-@EnableCaching
-public class CacheConfig {
+//@Configuration
+public class RedisCacheConfig {
 
 	@Bean
 	@ConditionalOnMissingBean(name = "redisTemplate")

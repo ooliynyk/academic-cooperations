@@ -29,7 +29,7 @@ public class ScholarOrganizationRepository implements OrganizationRepository {
 	}
 
 	@Override
-	@Cacheable("organization-by-name")
+	@Cacheable(value = "organization-by-name", key = "#organizationName", unless = "#result == null")
 	public Organization findOrganizationByName(String organizationName) {
 		logger.info("Finding organization by name '{}'", organizationName);
 		Organization organization = null;
@@ -48,7 +48,7 @@ public class ScholarOrganizationRepository implements OrganizationRepository {
 	}
 
 	@Override
-	@Cacheable(value = "organization-by-id")
+	@Cacheable(value = "organization-by-id", key = "#organizationId", unless = "#result == null")
 	public Organization findOrganizationById(String organizationId) {
 		logger.info("Finding organization by id '{}'", organizationId);
 

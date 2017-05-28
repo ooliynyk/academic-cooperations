@@ -1,0 +1,35 @@
+<ehcache xsi:noNamespaceSchemaLocation="ehcache.xsd"
+	updateCheck="true" monitoring="autodetect" dynamicConfig="true">
+	<diskStore path="java.io.tmpdir" />
+
+	<cache name="authors" maxElementsInMemory="0" eternal="true"
+		overflowToDisk="true" maxElementsOnDisk="10000000" diskPersistent="true"
+		memoryStoreEvictionPolicy="LRU">
+	</cache>
+
+	<cache name="publications" maxElementsInMemory="0" eternal="true"
+		overflowToDisk="true" maxElementsOnDisk="10000000" diskPersistent="true"
+		memoryStoreEvictionPolicy="LRU">
+	</cache>
+
+	<cache name="author-by-id" maxElementsInMemory="0" eternal="true"
+		overflowToDisk="true" maxElementsOnDisk="10000000" diskPersistent="true"
+		memoryStoreEvictionPolicy="LRU">
+	</cache>
+
+	<cache name="coauthors-by-authorid" maxElementsInMemory="0"
+		eternal="true" overflowToDisk="true" maxElementsOnDisk="10000000"
+		diskPersistent="true" memoryStoreEvictionPolicy="LRU">
+	</cache>
+
+	<cache name="organization-by-name" maxElementsInMemory="0"
+		eternal="true" overflowToDisk="true" maxElementsOnDisk="10000000"
+		diskPersistent="true" memoryStoreEvictionPolicy="LRU">
+	</cache>
+
+	<cache name="organization-by-id" maxElementsInMemory="0" eternal="true"
+		overflowToDisk="true" maxElementsOnDisk="10000000" diskPersistent="true"
+		memoryStoreEvictionPolicy="LRU">
+	</cache>
+
+</ehcache>

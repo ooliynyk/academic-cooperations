@@ -7,15 +7,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import vntu.itcgs.dto.ErrorResponse;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
 	@ExceptionHandler(value = Exception.class)
-	public ResponseEntity<Exception> defaultErrorHandler(Exception e) {
+	public ResponseEntity<ErrorResponse> defaultErrorHandler(Exception e) {
 		logger.error("Exception handler executed, error: ", e);
-		return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

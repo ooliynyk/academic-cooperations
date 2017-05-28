@@ -36,6 +36,10 @@ app.controller('PublicationsGraphController',
 					$http.get(url).then(function(response) {
 						network = $scope.network(response.data);
 						networkLayer(network);
+					},
+					function(response) {
+						var error = response.data
+						alert("Error: " + error.message);
 					});
 				}
 
