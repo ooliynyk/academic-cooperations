@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>vntu</groupId>
-	<artifactId>academic.publications</artifactId>
+	<artifactId>itcgs</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<name>academic-publications</name>
+	<name>itcgs</name>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
