@@ -26,7 +26,7 @@ public class ScholarOrganizationService implements OrganizationService {
 		
 		Organization organization = orgRepository.findOrganizationByName(organizationName);
 		if (organization == null)
-			throw new RuntimeException("Organizatin not found!");
+			throw new RuntimeException("Organization not found!");
 
 		return new OrganizationDetails(organization);
 	}
