@@ -33,11 +33,14 @@ app.controller('PublicationsGraphController',
 				}
 
 				if (url != null) {
+					toggleSpin(true);
 					$http.get(url).then(function(response) {
 						network = $scope.network(response.data);
 						networkLayer(network);
+						toggleSpin(false);
 					},
 					function(response) {
+						toggleSpin(false);
 						var error = response.data
 						if (error.message != null)
 						alert("Error: " + error.message);

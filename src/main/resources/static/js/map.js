@@ -201,3 +201,7 @@ function networkLayer(network) {
 		});
 	});
 }
+
+function toggleSpin(enabled) {
+	map.spin(enabled);
+}

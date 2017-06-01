@@ -3,6 +3,7 @@ package vntu.itcgs.repository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jsoup.nodes.Document;
@@ -52,8 +53,8 @@ public class ScholarAuthorRepository implements AuthorRepository {
 				OrganizationPageDocument organizationPageDoc = crawler.crawl();
 
 				Collection<String> authorsIdentifiers = organizationPageDoc.getAuthorsIdentifiers();
-				Collection<Author> authorsOnPage = authorsIdentifiers.parallelStream().map(id -> findAuthorById(id))
-						.collect(Collectors.toList());
+				Collection<Author> authorsOnPage = authorsIdentifiers.parallelStream()
+						.map(id -> findAuthorById(id)).filter(Objects::nonNull).collect(Collectors.toList());
 
 				authors.addAll(authorsOnPage);
 

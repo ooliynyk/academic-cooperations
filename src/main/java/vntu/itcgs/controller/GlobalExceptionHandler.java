@@ -17,7 +17,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<ErrorResponse> defaultErrorHandler(Exception e) {
 		logger.error("Exception handler executed, error: ", e);
-		return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+		String message = e.getMessage() != null ? e.getMessage() : "Internal server error";
+		return new ResponseEntity<>(new ErrorResponse(message), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

@@ -3,6 +3,7 @@ package vntu.itcgs.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,7 @@ public class ScholarAuthorService implements AuthorService {
 		Collection<AuthorDetails> authorsDetails = fetchAllAuthorsWithCoAuthorsFromOrganization(organizationDetails);
 
 		authorsDetails.parallelStream()
-			.filter(a -> a != null)
+			.filter(Objects::nonNull)
 			.forEach((AuthorDetails authorDetails) -> {
 				Collection<Publication> publications = publicationService
 						.fetchAllPublicationsByAuthorBetweenYears(authorDetails, fromYear, toYear);
@@ -75,6 +76,7 @@ public class ScholarAuthorService implements AuthorService {
 	private Collection<AuthorDetails> findCoAuthorsAndMapToDTOs(Collection<Author> authors) {
 		Collection<AuthorDetails> authorsDetails = new ArrayList<>();
 		authors.parallelStream()
+			.filter(Objects::nonNull)
 			.forEach((Author author) -> {
 				AuthorDetails authorDetails = new AuthorDetails(author);
 
