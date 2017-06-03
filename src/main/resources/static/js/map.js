@@ -7,9 +7,7 @@ var map = L.map('map').setView([ 51.505, -0.09 ], 3);
 L
 		.tileLayer(
 				'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-				{
-					attribution : 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
-				}).addTo(map);
+				{}).addTo(map);
 
 var markersLayer = new L.LayerGroup();
 markersLayer.addTo(map);
@@ -68,7 +66,6 @@ var geojson = L.geoJson(countries);
 var dataTableWindow = L.control.window(map, {
 	content : '<table id="coopTable" class="display" width="100%"></table>'
 });
-
 
 // get color depending on population density value
 function getColor(d) {
@@ -225,26 +222,21 @@ function toggleSpin(enabled) {
 
 function makeDataTable() {
 	var dataSet = [];
-	
+
 	NETWORK.nodes.forEach(function(node) {
 		dataSet.push([ node.label, node.value ]);
 	});
 
 	$('#coopTable').DataTable({
 		destroy : true,
-        dom: 'Bfrtip',
+		dom : 'Bfrtip',
 		data : dataSet,
 		columns : [ {
 			title : "Organization"
 		}, {
 			title : "Cooperation value"
 		} ],
-		buttons: [
-			'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5'
-        ]
+		buttons : [ 'copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5' ]
 	});
 
 	dataTableWindow.show();
