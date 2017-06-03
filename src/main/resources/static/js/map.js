@@ -66,8 +66,7 @@ legend.addTo(map);
 var geojson = L.geoJson(countries);
 
 var dataTableWindow = L.control.window(map, {
-	title : 'Hello world!',
-	content : '<table id="example" class="display" width="100%"></table>'
+	content : '<table id="coopTable" class="display" width="100%"></table>'
 });
 
 
@@ -225,16 +224,13 @@ function toggleSpin(enabled) {
 }
 
 function makeDataTable() {
-	console.log('hello');
-	console.log(NETWORK);
-
 	var dataSet = [];
 	
 	NETWORK.nodes.forEach(function(node) {
 		dataSet.push([ node.label, node.value ]);
 	});
 
-	$('#example').DataTable({
+	$('#coopTable').DataTable({
 		destroy : true,
         dom: 'Bfrtip',
 		data : dataSet,
