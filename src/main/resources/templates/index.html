@@ -10,37 +10,26 @@
 
 <link th:href="@{/css/style.css}" rel="stylesheet"></link>
 
-<script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
-
-<script th:src="@{/js/spin.min.js}"></script>
-<script th:src="@{/js/leaflet.spin.min.js}"></script>
-<script
-	th:src="@{/js/leaflet-image.js}"></script>
-
-<script th:src="@{/js/Control.Geocoder.js}"></script>
-<script th:src="@{/static/countries.geojson}"></script>
-
-<script
-	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
-
-
 <!-- Bootstrap -->
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
 	integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
 	crossorigin="anonymous" />
-<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
-	integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
-	crossorigin="anonymous"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
-	integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
-	crossorigin="anonymous"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-	integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-	crossorigin="anonymous"></script>
 
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" />
+
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/buttons/1.3.1/css/buttons.dataTables.min.css" />
+
+<script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>
+<script th:src="@{/js/leaflet.spin.min.js}"></script>
+
+<script th:src="@{/js/Control.Geocoder.js}"></script>
+<script th:src="@{/static/countries.geojson}"></script>
+
+<script th:src="@{/js/L.Control.Window.js}"></script>
+<link th:href="@{/css/L.Control.Window.css}" rel="stylesheet"></link>
 
 </head>
 <body>
@@ -81,12 +70,36 @@
 		</div>
 	</div>
 
-	<button id='snap' class='ui-button'>Take a snapshot</button>
-	<div id='snapshot'></div>
 	<div id="map"></div>
 	<button id="btn-spin"></button>
 
 	<script th:src="@{/js/map.js}"></script>
+
+	<script th:src="@{/js/spin.min.js}"></script>
+
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	
+	<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+	<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js"></script>
+	<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js"></script>
+	<script src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js"></script>
+	
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+		integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+		crossorigin="anonymous"></script>
+		
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+		integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+		crossorigin="anonymous"></script>
+
+	<script
+		src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+
 	<script th:src="@{/js/app.js}"></script>
+
 </body>
 </html>

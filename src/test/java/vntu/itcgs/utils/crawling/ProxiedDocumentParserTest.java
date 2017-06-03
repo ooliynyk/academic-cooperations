@@ -2,6 +2,8 @@ package vntu.itcgs.utils.crawling;
 
 import static org.junit.Assert.*;
 
+import java.net.SocketTimeoutException;
+
 import org.jsoup.nodes.Document;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +21,7 @@ public class ProxiedDocumentParserTest {
 	private ProxiedDocumentParser docParser;
 
 	@Test
-	public void testProxiedParsing() throws Exception {
+	public void testProxiedParsing() throws DocumentParsingException, SocketTimeoutException {
 		Document doc = docParser.parseDocument("http://google.com/");
 		assertNotNull(doc);
 	}

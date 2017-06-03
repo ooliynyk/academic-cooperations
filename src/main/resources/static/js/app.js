@@ -34,17 +34,20 @@ app.controller('PublicationsGraphController',
 
 				if (url != null) {
 					clearNetwork();
+
 					toggleSpin(true);
 					$http({
 						method : 'GET',
 						url : url
 					}).success(function(data, status, headers, config) {
-						console.log('s1' + status);
-						network = $scope.network(data);
-						drawNetwork(network);
+						if (status != 200) {
+							alert("Error: Response status " + status)
+						} else {
+							network = $scope.network(data);
+							drawNetwork(network);
+						}
 						toggleSpin(false);
 					}).error(function(data, status, headers, config) {
-						console.log('s2' + status);
 						toggleSpin(false);
 						var error = data
 						if (error.message != null)
@@ -64,7 +67,8 @@ app.controller('PublicationsGraphController',
 
 				var orgs = cooperationNetwork.organizations;
 
-				// we don't interested of root organization real cooperation
+				// we don't interested of root organization real
+				// cooperation
 				// value
 				orgs[rootId].cooperationValue = 1;
 
@@ -92,7 +96,6 @@ app.controller('PublicationsGraphController',
 				};
 				return data;
 			};
-
 		});
 
 function calculateEdgeValueCoef(cooperationNetwork) {

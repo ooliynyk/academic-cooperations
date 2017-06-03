@@ -63,22 +63,13 @@ legend.onAdd = function(map) {
 };
 legend.addTo(map);
 
-var snapshot = document.getElementById('snapshot');
-document.getElementById('snap').addEventListener('click', function() {
-	leafletImage(map, doImage);
-});
-function doImage(err, canvas) {
-	var img = document.createElement('img');
-	var dimensions = map.getSize();
-	img.width = dimensions.x;
-	img.height = dimensions.y;
-	img.src = canvas.toDataURL();
-	snapshot.innerHTML = '';
-	snapshot.appendChild(img);
-}
-
-
 var geojson = L.geoJson(countries);
+
+var dataTableWindow = L.control.window(map, {
+	title : 'Hello world!',
+	content : '<table id="example" class="display" width="100%"></table>'
+});
+
 
 // get color depending on population density value
 function getColor(d) {
@@ -176,8 +167,11 @@ function clearNetwork() {
 	geojsonLayer.clearLayers();
 }
 
+var NETWORK;
+
 function drawNetwork(network) {
 	clearNetwork();
+	NETWORK = network;
 
 	var nodeSizeCoef = calculateNodeSizeCoef(network.nodes);
 
@@ -186,6 +180,8 @@ function drawNetwork(network) {
 	var processingCounter = 0;
 
 	var lazyCalls = [];
+
+	makeDataTable();
 
 	network.nodes.forEach(function(node) {
 		// console.log(node.label);
@@ -226,4 +222,34 @@ function drawNetwork(network) {
 
 function toggleSpin(enabled) {
 	map.spin(enabled);
+}
+
+function makeDataTable() {
+	console.log('hello');
+	console.log(NETWORK);
+
+	var dataSet = [];
+	
+	NETWORK.nodes.forEach(function(node) {
+		dataSet.push([ node.label, node.value ]);
+	});
+
+	$('#example').DataTable({
+		destroy : true,
+        dom: 'Bfrtip',
+		data : dataSet,
+		columns : [ {
+			title : "Organization"
+		}, {
+			title : "Cooperation value"
+		} ],
+		buttons: [
+			'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ]
+	});
+
+	dataTableWindow.show();
 }
