@@ -27,17 +27,20 @@ search.addTo(map);
 
 var info = L.control();
 info.onAdd = function(map) {
-	this._div = L.DomUtil.create('div', 'info'); // create a div with a class
-	// "info"
+	this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
 	this.update();
 	return this._div;
 };
 // method that we will use to update the control based on feature properties
 // passed
 info.update = function(props) {
-	this._div.innerHTML = '<h4>Country cooperation value</h4>'
-			+ (props ? '<b>' + props.ADMIN + '</b><br />' + props.density
-					: 'Hover over a country');
+	if (props) {
+		this._div.innerHTML = '<h4>Country cooperation value</h4>' + '<b>'
+				+ props.ADMIN + '</b><br />' + props.density;
+		L.DomUtil.removeClass(this._div, 'invisible');
+	} else {
+		L.DomUtil.addClass(this._div, 'invisible');
+	}
 };
 info.addTo(map);
 
@@ -66,6 +69,11 @@ var geojson = L.geoJson(countries);
 var dataTableWindow = L.control.window(map, {
 	content : '<table id="coopTable" class="display" width="100%"></table>'
 });
+
+var dataTableButton = L.easyButton('fa-table', function(btn, map) {
+	makeDataTable();
+}).addTo(map);
+dataTableButton.disable();
 
 // get color depending on population density value
 function getColor(d) {
@@ -116,9 +124,6 @@ function onEachFeature(feature, layer) {
 }
 
 function drawColorfulCountries(geoNetwork) {
-	// console.log(geoNetwork);
-	// console.log(geojson);
-
 	geojson = L.geoJson(countries, {
 		filter : function(feature, layer) {
 			var country = feature.properties.ADMIN;
@@ -163,11 +168,14 @@ function clearNetwork() {
 	geojsonLayer.clearLayers();
 }
 
-var NETWORK;
+var NETWORK = {
+	nodes : []
+};
 
 function drawNetwork(network) {
 	clearNetwork();
 	NETWORK = network;
+	dataTableButton.enable();
 
 	var nodeSizeCoef = calculateNodeSizeCoef(network.nodes);
 
@@ -176,8 +184,6 @@ function drawNetwork(network) {
 	var processingCounter = 0;
 
 	var lazyCalls = [];
-
-	makeDataTable();
 
 	network.nodes.forEach(function(node) {
 		// console.log(node.label);
@@ -218,6 +224,9 @@ function drawNetwork(network) {
 
 function toggleSpin(enabled) {
 	map.spin(enabled);
+	if (enabled) {
+		dataTableButton.disable();
+	}
 }
 
 function makeDataTable() {

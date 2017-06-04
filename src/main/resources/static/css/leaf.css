@@ -57,3 +57,7 @@ div#status {
 .dialog-demo-prerendered md-checkbox {
 	margin-bottom: 0;
 }
+
+.easy-button-button.disabled {
+  display: none;
+}
