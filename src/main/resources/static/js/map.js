@@ -75,6 +75,23 @@ var dataTableButton = L.easyButton('fa-table', function(btn, map) {
 }).addTo(map);
 dataTableButton.disable();
 
+
+//Functions to either disable (onmouseover) or enable (onmouseout) the map's dragging
+function controlEnter(e) {
+    map.dragging.disable();
+    map.doubleClickZoom.disable();
+}
+function controlLeave() {
+    map.dragging.enable();
+    map.doubleClickZoom.enable();
+}
+
+var inputTags = document.getElementsByTagName("input")
+for (var i = 0; i < inputTags.length; i++) {
+    inputTags[i].onmouseover = controlEnter;
+    inputTags[i].onmouseout = controlLeave;
+}
+
 // get color depending on population density value
 function getColor(d) {
 	return d > 1000 ? '#800026' : d > 500 ? '#BD0026' : d > 200 ? '#E31A1C'
