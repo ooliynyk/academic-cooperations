@@ -13,15 +13,15 @@ app.controller('PublicationsGraphController',
             var searchBy = getSearchBy();
 
             var url = null;
-            if (searchBy == SearchByEnum.PUBLICATIONS) {
+            if (searchBy === SearchByEnum.PUBLICATIONS) {
                 var fromYear = $scope.fromYear;
                 var toYear = $scope.toYear;
 
                 url = PROJECT_URL + '/network/by-publications?university=' + university;
-                if (fromYear != undefined) {
+                if (fromYear !== undefined) {
                     url += '&fromYear=' + fromYear;
                 }
-                if (toYear != undefined) {
+                if (toYear !== undefined) {
                     url += '&toYear=' + toYear;
                 }
             } else {
@@ -32,15 +32,15 @@ app.controller('PublicationsGraphController',
             $http({
                 method: 'GET',
                 url: url
-            }).success(function (data, status, headers, config) {
-                if (status == 200) {
+            }).success(function (data, status) {
+                if (status === 200) {
                     var network = $scope.mapToNetwork(data);
                     processingFinish(network);
                 } else {
-                    processingError("Error: Response status " + status)
+                    processingError("Response status " + status)
                 }
-            }).error(function (error, status, headers, config) {
-                processingError(error.message);
+            }).error(function (data) {
+                processingError(data.message);
             });
 
         };
@@ -53,12 +53,14 @@ app.controller('PublicationsGraphController',
             var orgs = cooperationNetwork.organizations;
 
             for (var id in orgs) {
-                if (id !== rootId) {
-                    network.push({
-                        id: id,
-                        value: orgs[id].cooperationValue,
-                        label: orgs[id].name
-                    });
+                if (orgs.hasOwnProperty(id)) {
+                    if (id !== rootId) {
+                        network.push({
+                            id: id,
+                            value: orgs[id].cooperationValue,
+                            label: orgs[id].name
+                        });
+                    }
                 }
             }
 
