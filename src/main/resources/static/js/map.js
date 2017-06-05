@@ -1,13 +1,9 @@
 var NODE_SIZE_MAX = 15;
-
-var DUMMY_LOCATION = [0, 0];
+var NETWORK = [];
 
 var map = L.map('map').setView([51.505, -0.09], 3);
 
-L
-    .tileLayer(
-        'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-        {}).addTo(map);
+L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {}).addTo(map);
 
 var markersLayer = new L.LayerGroup();
 markersLayer.addTo(map);
@@ -31,8 +27,7 @@ info.onAdd = function (map) {
     this.update();
     return this._div;
 };
-// method that we will use to update the control based on feature properties
-// passed
+// method that we will use to update the control based on feature properties passed
 info.update = function (props) {
     if (props) {
         this._div.innerHTML = '<h4>Country cooperation value</h4>' + '<b>'
@@ -52,8 +47,7 @@ legend.onAdd = function (map) {
     var div = L.DomUtil.create('div', 'info legend'), grades = [0, 10, 20, 50,
         100, 200, 500, 1000], labels = [];
 
-    // loop through our density intervals and generate a label with a colored
-    // square for each interval
+    // loop through our density intervals and generate a label with a colored square for each interval
     for (var i = 0; i < grades.length; i++) {
         div.innerHTML += '<i style="background:' + getColor(grades[i] + 1)
             + '"></i> ' + grades[i]
@@ -145,7 +139,6 @@ function drawColorfulCountries(geoNetwork) {
     geojson = L.geoJson(countries, {
         filter: function (feature, layer) {
             var country = feature.properties.ADMIN;
-            console.log(country);
 
             if (geoNetwork.has(country)) {
                 feature.properties.density = geoNetwork.get(country);
@@ -168,7 +161,6 @@ function drawNode(label, size, location) {
         permanent: false,
         offset: [0, 0]
     });
-    // marker.addTo(map);
     markersLayer.addLayer(marker);
 }
 
@@ -186,16 +178,10 @@ function clearNetwork() {
     geojsonLayer.clearLayers();
 }
 
-var NETWORK = {
-    nodes: []
-};
-
 function drawNetwork(network) {
     clearNetwork();
-    NETWORK = network;
-    dataTableButton.enable();
 
-    var nodeSizeCoef = calculateNodeSizeCoef(network.nodes);
+    var nodeSizeCoef = calculateNodeSizeCoef(network);
 
     var geoNetwork = new Map();
 
@@ -203,8 +189,7 @@ function drawNetwork(network) {
 
     var lazyCalls = [];
 
-    network.nodes.forEach(function (node) {
-        // console.log(node.label);
+    network.forEach(function (node) {
 
         geocoder.geocode(node.label, function (results) {
             processingCounter++;
@@ -212,8 +197,7 @@ function drawNetwork(network) {
             if (results == null || results.length == 0)
                 return;
 
-            var latLng = new L.LatLng(results[0].center.lat,
-                results[0].center.lng);
+            var latLng = new L.LatLng(results[0].center.lat, results[0].center.lng);
 
             var country = results[0].properties.address.country;
 
@@ -229,7 +213,7 @@ function drawNetwork(network) {
                 drawNode(node.label, Math.max(nodeSize, 5), latLng);
             });
 
-            if (processingCounter == network.nodes.length) {
+            if (processingCounter == network.length) {
                 drawColorfulCountries(geoNetwork);
 
                 lazyCalls.forEach(function (call) {
@@ -240,17 +224,29 @@ function drawNetwork(network) {
     });
 }
 
-function toggleSpin(enabled) {
-    map.spin(enabled);
-    if (enabled) {
-        dataTableButton.disable();
-    }
+function processingStart() {
+    map.spin(true);
+    clearNetwork();
+    dataTableButton.disable();
+}
+
+function processingFinish(network) {
+    NETWORK = network;
+
+    dataTableButton.enable();
+    drawNetwork(network);
+    map.spin(false);
+}
+
+function processingError(message) {
+    map.spin(false);
+    alert("Error: " + message);
 }
 
 function makeDataTable() {
     var dataSet = [];
 
-    NETWORK.nodes.forEach(function (node) {
+    NETWORK.forEach(function (node) {
         dataSet.push([node.label, node.value]);
     });
 
