@@ -12,6 +12,13 @@ var geojsonLayer = new L.LayerGroup();
 geojsonLayer.addTo(map);
 
 var geocoder = new L.Control.Geocoder.Nominatim();
+var googleMapsGeocoder = new L.Control.Geocoder.Google('AIzaSyAR9MQdn8zLoLQBoT95oyrfeT-zPYygkqo');
+
+label = "University of Gothenburg";
+ geocode(label, function(latLng, country) {
+ console.log(latLng);
+ console.log(country);
+ });
 
 // control that shows search box
 var search = L.control();
@@ -178,6 +185,36 @@ function clearNetwork() {
     geojsonLayer.clearLayers();
 }
 
+function geocode(label, callback) {
+    if (typeof callback === 'function') {
+        geocoder.geocode(label, function (nominatimResults) {
+            var latLng = geocoderResultsToLatLng(nominatimResults);
+            if (latLng !== null) {
+                var country = nominatimResults[0].properties.address.country;
+
+                return callback(latLng, country);
+            } else {
+                console.log("Organization: \'" + label + "\' not found by nominatim. Trying google maps");
+                googleMapsGeocoder.geocode(label, function (googleMapsResults) {
+                    latLng = geocoderResultsToLatLng(googleMapsResults);
+                    if (latLng !== null) {
+                        for (var i in googleMapsResults[0].properties) {
+                            var prop = googleMapsResults[0].properties[i];
+                            if (prop.types.includes('country')) {
+                                var country = prop.long_name;
+                            }
+                        }
+
+                        return callback(latLng, country);
+                    }
+                    console.log("Organization: \'" + label + "\' not found");
+                    return;
+                });
+            }
+        });
+    }
+}
+
 function drawNetwork(network) {
     clearNetwork();
 
@@ -191,15 +228,8 @@ function drawNetwork(network) {
 
     network.forEach(function (node) {
 
-        geocoder.geocode(node.label, function (results) {
+        geocode(node.label, function (latLng, country) {
             processingCounter++;
-
-            if (results == null || results.length == 0)
-                return;
-
-            var latLng = new L.LatLng(results[0].center.lat, results[0].center.lng);
-
-            var country = results[0].properties.address.country;
 
             var value = node.value;
             if (geoNetwork.has(country)) {
@@ -222,6 +252,12 @@ function drawNetwork(network) {
             }
         });
     });
+}
+
+function geocoderResultsToLatLng(results) {
+    return (results !== null && results.length !== 0) ?
+        new L.LatLng(results[0].center.lat, results[0].center.lng) :
+        null;
 }
 
 function processingStart() {

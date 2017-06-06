@@ -146,7 +146,7 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 	private static Collection<AuthorDetails> mapAuthorsToFlatCoAuthorsSet(Collection<AuthorDetails> authors) {
 		Collection<AuthorDetails> flatCoAuthors = new ArrayList<>();
 		for (AuthorDetails author : authors) {
-			if (author.getCoAuthors() != null) {
+			if (author != null && author.getCoAuthors() != null) {
 				Collection<AuthorDetails> coAuthors = author.getCoAuthors().stream().distinct()
 						.map(a -> new AuthorDetails(a)).collect(Collectors.toSet());
 
