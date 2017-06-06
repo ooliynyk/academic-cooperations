@@ -14,11 +14,11 @@ geojsonLayer.addTo(map);
 var geocoder = new L.Control.Geocoder.Nominatim();
 var googleMapsGeocoder = new L.Control.Geocoder.Google('AIzaSyAR9MQdn8zLoLQBoT95oyrfeT-zPYygkqo');
 
-label = "University of Gothenburg";
+/*label = "University of Gothenburg";
  geocode(label, function(latLng, country) {
  console.log(latLng);
  console.log(country);
- });
+ });*/
 
 // control that shows search box
 var search = L.control();
