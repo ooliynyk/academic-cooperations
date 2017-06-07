@@ -210,14 +210,14 @@ function geocode(label, callback) {
                         return callback(latLng, country);
                     }
                     console.log("Organization: \'" + label + "\' not found");
-                    return;
+                    return callback(null, null);
                 });
             }
         });
     }
 }
 
-function drawNetwork(network) {
+function drawNetwork(network, onFinish) {
     clearNetwork();
 
     var nodeSizeCoef = calculateNodeSizeCoef(network);
@@ -233,17 +233,23 @@ function drawNetwork(network) {
         geocode(node.label, function (latLng, country) {
             processingCounter++;
 
-            var value = node.value;
-            if (geoNetwork.has(country)) {
-                value += geoNetwork.get(country);
+            if (latLng === null || country === null) {
+                return;
             }
-            geoNetwork.set(country, value);
 
-            var nodeSize = node.value * nodeSizeCoef;
+            if (latLng !== null) {
+                var value = node.value;
+                if (geoNetwork.has(country)) {
+                    value += geoNetwork.get(country);
+                }
+                geoNetwork.set(country, value);
 
-            lazyCalls.push(function () {
-                drawNode(node.label, Math.max(nodeSize, 5), latLng);
-            });
+                var nodeSize = node.value * nodeSizeCoef;
+
+                lazyCalls.push(function () {
+                    drawNode(node.label, Math.max(nodeSize, 5), latLng);
+                });
+            }
 
             if (processingCounter == network.length) {
                 drawColorfulCountries(geoNetwork);
@@ -251,6 +257,9 @@ function drawNetwork(network) {
                 lazyCalls.forEach(function (call) {
                     call();
                 });
+                if (typeof onFinish === 'function') {
+                    onFinish();
+                }
             }
         });
     });
@@ -272,8 +281,9 @@ function processingFinish(network) {
     NETWORK = network;
 
     dataTableButton.enable();
-    drawNetwork(network);
-    map.spin(false);
+    drawNetwork(network, function() {
+        map.spin(false);
+    });
 }
 
 function processingError(message) {
