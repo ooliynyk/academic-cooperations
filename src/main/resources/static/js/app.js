@@ -12,8 +12,8 @@ app.controller('PublicationsGraphController',
         $scope.search = function (university) {
             var searchBy = getSearchBy();
 
+            var isCoAuthorsVerification = getIsCoAuthorsVerification();
             var url = null;
-            console.log(searchBy);
             if (searchBy == SearchByEnum.PUBLICATIONS) {
                 var fromYear = $scope.fromYear;
                 var toYear = $scope.toYear;
@@ -28,6 +28,7 @@ app.controller('PublicationsGraphController',
             } else {
                 url = PROJECT_URL + '/network/by-coauthors?university=' + university;
             }
+            url += "&coAuthorsVerification=" + isCoAuthorsVerification;
 
             processingStart();
             $http({
@@ -73,4 +74,8 @@ function getSearchBy() {
     var searchByElement = document.getElementById("searchBy");
 
     return searchByElement.options[searchByElement.selectedIndex].value;
+}
+
+function getIsCoAuthorsVerification() {
+    return $("[name='co-a-verif-checkbox']").bootstrapSwitch('state');
 }

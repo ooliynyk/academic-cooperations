@@ -33,11 +33,11 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 	}
 
 	@Override
-	public CooperationNetwork fetchCoAuthorsCooperationNetwork(String organizationName) {
+	public CooperationNetwork fetchCoAuthorsCooperationNetwork(String organizationName, boolean coAuthorsVerification) {
 		CooperationNetwork cooperationNetwork = new CooperationNetwork();
 
 		OrganizationDetails organization = organizationService.fetchOrganizationByName(organizationName);
-		Collection<AuthorDetails> authors = authorService.fetchAllAuthorsWithCoAuthorsFromOrganization(organization);
+		Collection<AuthorDetails> authors = authorService.fetchAllAuthorsWithCoAuthorsFromOrganization(organization, coAuthorsVerification);
 
 		cooperationNetwork.setRootOrganization(organization);
 
@@ -55,12 +55,13 @@ public class ScholarAcademicCooperationService implements AcademicCooperationSer
 	}
 
 	@Override
-	public CooperationNetwork fetchPublicationsCooperationNetwork(String organizationName, Date fromYear, Date toYear) {
+	public CooperationNetwork fetchPublicationsCooperationNetwork(String organizationName, Date fromYear, Date toYear,
+																  boolean coAuthorsVerification) {
 		CooperationNetwork cooperationNetwork = new CooperationNetwork();
 
 		OrganizationDetails organization = organizationService.fetchOrganizationByName(organizationName);
 		Collection<AuthorDetails> authors = authorService
-				.fetchAllAuthorsWithCoAuthorsAndPublicationsBetweenYears(organization, fromYear, toYear);
+				.fetchAllAuthorsWithCoAuthorsAndPublicationsBetweenYears(organization, fromYear, toYear, coAuthorsVerification);
 
 		cooperationNetwork.setRootOrganization(organization);
 

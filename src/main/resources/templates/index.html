@@ -45,7 +45,7 @@
                     <option value="0" selected="" data-toggle="collapse" data-target="#filter">By co-authors</option>
                     <option value="1" data-toggle="collapse" data-target="#filter">By publications</option>
                 </select>
-                <input type="checkbox" name="my-checkbox" checked data-size="mini" data-off-color="warning" data-label-text="Co-authors verification">
+                <input type="checkbox" name="co-a-verif-checkbox" checked data-size="mini" data-off-color="warning" data-label-text="Co-authors verification">
                 <input ng-model="searchUniversity" type="text" size="55" class="form-control" placeholder="Search for university"/>
             </div>
         </nav>
@@ -90,7 +90,7 @@
         integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 <script th:src="@{/js/lib/bootstrap-switch.min.js}"></script>
 <script>
-    $("[name='my-checkbox']").bootstrapSwitch();
+    $("[name='co-a-verif-checkbox']").bootstrapSwitch();
 </script>
 
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>

@@ -24,13 +24,13 @@ public class NetworkSearchController {
 	private AcademicCooperationService cooperationService;
 
 	@GetMapping("/by-coauthors")
-	public CooperationNetwork searchByCoAtuhors(@RequestParam String university) {
+	public CooperationNetwork searchByCoAtuhors(@RequestParam String university, @RequestParam boolean coAuthorsVerification) {
 		logger.info("Searching cooperation by co-authors for organization '{}'", university);
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
-		CooperationNetwork publicationNetwork = cooperationService.fetchCoAuthorsCooperationNetwork(university);
+		CooperationNetwork publicationNetwork = cooperationService.fetchCoAuthorsCooperationNetwork(university, coAuthorsVerification);
 
 		stopWatch.stop();
 		logger.info("Searching was finished, elapsed time: {}s", stopWatch.getTotalTimeSeconds());
@@ -41,14 +41,15 @@ public class NetworkSearchController {
 	@GetMapping("/by-publications")
 	public CooperationNetwork searchByPublications(@RequestParam String university,
 			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy") Date fromYear,
-			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy") Date toYear) {
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy") Date toYear,
+			@RequestParam boolean coAuthorsVerification) {
 		logger.info("Searching cooperation by publications for organization '{}'", university);
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 
 		CooperationNetwork publicationNetwork = cooperationService.fetchPublicationsCooperationNetwork(university,
-				fromYear, toYear);
+				fromYear, toYear, coAuthorsVerification);
 
 		stopWatch.stop();
 		logger.info("Searching was finished, elapsed time: {}s", stopWatch.getTotalTimeSeconds());

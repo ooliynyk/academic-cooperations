@@ -32,20 +32,22 @@ public class ScholarAuthorService implements AuthorService {
 	}
 
 	@Override
-	public Collection<AuthorDetails> fetchAllAuthorsWithCoAuthorsFromOrganization(OrganizationDetails organizationDetails) {
+	public Collection<AuthorDetails> fetchAllAuthorsWithCoAuthorsFromOrganization(OrganizationDetails organizationDetails,
+																				  boolean coAuthorsVerification) {
 		logger.info("Fetching authors with co-authors");
 
 		Collection<Author> authors = authorRepository.findAllAuthorsByOrganizationId(organizationDetails.getId());
 
-		return findCoAuthorsAndMapToDTOs(authors);
+		return findCoAuthorsAndMapToDTOs(authors, coAuthorsVerification);
 	}
 	
 	@Override
 	public Collection<AuthorDetails> fetchAllAuthorsWithCoAuthorsAndPublicationsBetweenYears(
-			OrganizationDetails organizationDetails, Date fromYear, Date toYear) {
+			OrganizationDetails organizationDetails, Date fromYear, Date toYear, boolean coAuthorsVerification) {
 		logger.info("Fetching authors with publications");
 
-		Collection<AuthorDetails> authorsDetails = fetchAllAuthorsWithCoAuthorsFromOrganization(organizationDetails);
+		Collection<AuthorDetails> authorsDetails =
+				fetchAllAuthorsWithCoAuthorsFromOrganization(organizationDetails, coAuthorsVerification);
 
 		authorsDetails.parallelStream()
 			.filter(Objects::nonNull)
@@ -73,7 +75,7 @@ public class ScholarAuthorService implements AuthorService {
 		return authors;
 	}
 	
-	private Collection<AuthorDetails> findCoAuthorsAndMapToDTOs(Collection<Author> authors) {
+	private Collection<AuthorDetails> findCoAuthorsAndMapToDTOs(Collection<Author> authors, boolean coAuthorsVerification) {
 		Collection<AuthorDetails> authorsDetails = new ArrayList<>();
 		authors.parallelStream()
 			.filter(Objects::nonNull)
@@ -83,7 +85,7 @@ public class ScholarAuthorService implements AuthorService {
 				if (author.isHasCoAuthors()) {
 					Collection<String> coAuthorsIdentifiers = authorRepository.findCoAuthorsIdentifiersByAuthorId(author.getId());
 					Set<Author> coAuthors = coAuthorsIdentifiers.parallelStream()
-							.filter(coAuthorId -> hasCommunication(author.getId(), coAuthorId))
+							.filter(coAuthorId -> coAuthorsVerification ? hasCommunication(author.getId(), coAuthorId) : true)
 							.map(coAuthorId -> authorRepository.findAuthorById(coAuthorId))
 							.filter(coAuthor -> coAuthor != null)
 							.collect(Collectors.toSet());

@@ -6,8 +6,8 @@ import vntu.itcgs.dto.CooperationNetwork;
 
 public interface AcademicCooperationService {
 
-	CooperationNetwork fetchCoAuthorsCooperationNetwork(String organizationName);
+	CooperationNetwork fetchCoAuthorsCooperationNetwork(String organizationName, boolean coAuthorsVerification);
 
-	CooperationNetwork fetchPublicationsCooperationNetwork(String organizationName, Date fromYear, Date toYear);
+	CooperationNetwork fetchPublicationsCooperationNetwork(String organizationName, Date fromYear, Date toYear, boolean coAuthorsVerification);
 
 }
