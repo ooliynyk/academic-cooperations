@@ -13,7 +13,8 @@ app.controller('PublicationsGraphController',
             var searchBy = getSearchBy();
 
             var url = null;
-            if (searchBy === SearchByEnum.PUBLICATIONS) {
+            console.log(searchBy);
+            if (searchBy == SearchByEnum.PUBLICATIONS) {
                 var fromYear = $scope.fromYear;
                 var toYear = $scope.toYear;
 
