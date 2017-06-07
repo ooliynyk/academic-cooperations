@@ -233,10 +233,6 @@ function drawNetwork(network, onFinish) {
         geocode(node.label, function (latLng, country) {
             processingCounter++;
 
-            if (latLng === null || country === null) {
-                return;
-            }
-
             if (latLng !== null) {
                 var value = node.value;
                 if (geoNetwork.has(country)) {
