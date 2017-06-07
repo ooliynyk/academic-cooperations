@@ -3,7 +3,9 @@ var NETWORK = [];
 
 var map = L.map('map').setView([51.505, -0.09], 3);
 
-L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {}).addTo(map);
+L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Information technology of identification of a scientific cooperation. Vinnytsia National Technical University 2017'
+}).addTo(map);
 
 var markersLayer = new L.LayerGroup();
 markersLayer.addTo(map);
